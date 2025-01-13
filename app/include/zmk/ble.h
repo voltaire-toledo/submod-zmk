@@ -24,6 +24,7 @@ int zmk_ble_clear_bonds();
 int zmk_ble_prof_next();
 int zmk_ble_prof_prev();
 int zmk_ble_prof_select(uint8_t index);
+int zmk_ble_prof_pair_start(uint8_t index);
 
 int zmk_ble_active_profile_index();
 bt_addr_le_t *zmk_ble_active_profile_addr();
@@ -32,6 +33,8 @@ bool zmk_ble_active_profile_is_connected();
 char *zmk_ble_active_profile_name();
 
 int zmk_ble_unpair_all();
+uint8_t zmk_ble_get_active_profile_bt_id(void);
+uint8_t zmk_ble_is_connected(void);
 
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
 int zmk_ble_put_peripheral_addr(const bt_addr_le_t *addr);

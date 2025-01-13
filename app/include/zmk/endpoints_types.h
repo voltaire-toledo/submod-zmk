@@ -12,6 +12,8 @@
 enum zmk_transport {
     ZMK_TRANSPORT_USB,
     ZMK_TRANSPORT_BLE,
+    ZMK_TRANSPORT_24G,
+    ZMK_TRANSPORT_NONE
 };
 
 /**

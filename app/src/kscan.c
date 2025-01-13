@@ -18,7 +18,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #define ZMK_KSCAN_EVENT_STATE_PRESSED 0
 #define ZMK_KSCAN_EVENT_STATE_RELEASED 1
-
+bool dip_switch_update_user(uint8_t index, bool active);
 struct zmk_kscan_event {
     uint32_t row;
     uint32_t column;
@@ -37,7 +37,11 @@ static void zmk_kscan_callback(const struct device *dev, uint32_t row, uint32_t 
         .row = row,
         .column = column,
         .state = (pressed ? ZMK_KSCAN_EVENT_STATE_PRESSED : ZMK_KSCAN_EVENT_STATE_RELEASED)};
-
+    //report mac/win dip status.
+    if(row==8&&column==0)
+    {
+        dip_switch_update_user(0,pressed?1:0);
+    }
     k_msgq_put(&zmk_kscan_msgq, &ev, K_NO_WAIT);
     k_work_submit(&msg_processor.work);
 }

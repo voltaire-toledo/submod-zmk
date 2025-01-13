@@ -90,6 +90,18 @@ target_sources_ifdef(CONFIG_ZMK_BACKLIGHT app PRIVATE src/backlight.c)
 target_sources(app PRIVATE src/workqueue.c)
 target_sources(app PRIVATE src/main.c)
 
+target_sources(app PRIVATE src/leds.c)
+zephyr_library_include_directories(${ZEPHYR_BASE}/subsys/bluetooth/host)
+
 add_subdirectory(src/display/)
+
+
+add_subdirectory_ifdef(CONFIG_ZMK_NRF_24G_ECB src/24G)
+zephyr_library_include_directories(src/24G)
+
+
+add_subdirectory_ifdef(CONFIG_ZMK_LAUNCHER src/launcher)
+add_subdirectory(src/dfu/)
+
 
 zephyr_cc_option(-Wfatal-errors)

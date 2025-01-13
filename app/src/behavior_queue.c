@@ -23,13 +23,13 @@ K_MSGQ_DEFINE(zmk_behavior_queue_msgq, sizeof(struct q_item), CONFIG_ZMK_BEHAVIO
 
 static void behavior_queue_process_next(struct k_work *work);
 static K_WORK_DELAYABLE_DEFINE(queue_work, behavior_queue_process_next);
-
+uint8_t macro_running;
 static void behavior_queue_process_next(struct k_work *work) {
     struct q_item item = {.wait = 0};
 
     while (k_msgq_get(&zmk_behavior_queue_msgq, &item, K_NO_WAIT) == 0) {
-        LOG_DBG("Invoking %s: 0x%02x 0x%02x", item.binding.behavior_dev, item.binding.param1,
-                item.binding.param2);
+        LOG_DBG("Invoking %s: 0x%02x 0x%02x,%d", item.binding.behavior_dev, item.binding.param1,
+                item.binding.param2,item.press);
 
         struct zmk_behavior_binding_event event = {.position = item.position,
                                                    .timestamp = k_uptime_get()};
@@ -47,6 +47,14 @@ static void behavior_queue_process_next(struct k_work *work) {
             break;
         }
     }
+    if(k_msgq_num_used_get(&zmk_behavior_queue_msgq)>0)
+    {
+        macro_running =1;
+    }
+    else 
+    {
+        macro_running =0;
+    }
 }
 
 int zmk_behavior_queue_add(uint32_t position, const struct zmk_behavior_binding binding, bool press,
@@ -55,6 +63,7 @@ int zmk_behavior_queue_add(uint32_t position, const struct zmk_behavior_binding 
 
     const int ret = k_msgq_put(&zmk_behavior_queue_msgq, &item, K_NO_WAIT);
     if (ret < 0) {
+        LOG_ERR("behavior_queue full");
         return ret;
     }
 
@@ -63,4 +72,8 @@ int zmk_behavior_queue_add(uint32_t position, const struct zmk_behavior_binding 
     }
 
     return 0;
+}
+uint8_t behavior_queue_is_full(void)
+{
+    return (k_msgq_num_used_get(&zmk_behavior_queue_msgq)>(CONFIG_ZMK_BEHAVIORS_QUEUE_SIZE-32))?1:0;
 }

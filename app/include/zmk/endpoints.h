@@ -26,6 +26,10 @@
 #define ZMK_ENDPOINT_BLE_COUNT 0
 #endif
 
+enum {
+	REBOOT_ENDPOINT_BLE=0xc0,
+	REBOOT_ENDPOINT_24G
+};
 /**
  * The total number of different (struct zmk_endpoint_instance) values that can
  * be selected.
@@ -69,3 +73,5 @@ int zmk_endpoints_toggle_transport(void);
 struct zmk_endpoint_instance zmk_endpoints_selected(void);
 
 int zmk_endpoints_send_report(uint16_t usage_page);
+
+uint8_t get_current_transport(void);

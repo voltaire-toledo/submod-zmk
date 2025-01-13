@@ -23,7 +23,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
 #include <zmk/usb.h>
 #endif
-
+bool all_keys_up(void);
 bool is_usb_power_present() {
 #if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
     return zmk_usb_is_powered();
@@ -59,7 +59,17 @@ enum zmk_activity_state zmk_activity_get_state() { return activity_state; }
 
 int activity_event_listener(const zmk_event_t *eh) {
     activity_last_uptime = k_uptime_get();
-
+    struct zmk_position_state_changed *pos_state;
+    
+    pos_state = as_zmk_position_state_changed(eh);
+    if(pos_state)
+    {
+        if(pos_state->state)
+        {
+            void bat_low_check(void);
+            bat_low_check();
+        }
+    }
     return set_state(ZMK_ACTIVITY_ACTIVE);
 }
 
@@ -67,8 +77,13 @@ void activity_work_handler(struct k_work *work) {
     int32_t current = k_uptime_get();
     int32_t inactive_time = current - activity_last_uptime;
 #if IS_ENABLED(CONFIG_ZMK_SLEEP)
-    if (inactive_time > MAX_SLEEP_MS && !is_usb_power_present()) {
+    if ((inactive_time > MAX_SLEEP_MS || activity_state == ZMK_ACTIVITY_SLEEP) && !is_usb_power_present() && all_keys_up()) {
         // Put devices in suspend power mode before sleeping
+        void leds_turnoff(void);
+        leds_turnoff();
+        void kscan_gpio_direct_enter_sleep(void);
+        kscan_gpio_direct_enter_sleep();
+        LOG_DBG("ZMK_ACTIVITY_SLEEP");
         set_state(ZMK_ACTIVITY_SLEEP);
         pm_state_force(0U, &(struct pm_state_info){PM_STATE_SOFT_OFF, 0, 0});
     } else
