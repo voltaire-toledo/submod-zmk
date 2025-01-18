@@ -5,8 +5,10 @@ type: board
 arch: arm
 features:
   - keys
-  - underglow
+
 outputs:
   - usb
   - ble
+  - 24G
+  
 url: https://www.keychron.com/
