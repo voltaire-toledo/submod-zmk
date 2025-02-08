@@ -15,6 +15,8 @@ To review features, check out the [feature overview](https://zmk.dev/docs/). ZMK
 [Keychron](https://keychron.com/) use zmk source code for Bpro series keyboards ,have made big changes fro Bpro, also add proprietary 2.4g communication.
 
 To build the firmware ,for example: keychorn b1 pro
+
+prepare:
 ```    
     mkdir keychron
     cd keychron
@@ -22,6 +24,14 @@ To build the firmware ,for example: keychorn b1 pro
     cd zmk
     west init -l app/
     west update
-    git am 001-esb-nrf-fix.patch
+```
+patch zephyr:
+```
+    cd zephyr
+    git am ../001-esb-nrf-fix.patch
+```
+build firmware:
+```
+    cd app
     west build -b keychron -p -- -DSHIELD=keychron_b1_us
 ```
