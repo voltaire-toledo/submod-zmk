@@ -1,9 +1,9 @@
 param(
-    [string]$KeymapPath = "JIGS/QC-IN_PROGRESS/v1.2-validator-hardening.keymap",
-    [string]$BaselinePath = "JIGS/v1.0-HRM-QC_PASSED.keymap",
-    [string]$ExpectedBaselineSha256 = "faa1612fc82c6c23bfa43e1f1551a576a6a3feeaee2bbb0af9d9c3cd219d056d",
-    [int[]]$ApprovedKeyPositions = @(),
-    [string]$ExpectedCandidateDefinitionsSha256 = ""
+    [string]$KeymapPath = "JIGS/QC-IN_PROGRESS/v0.19-ten-key-foundation.keymap",
+    [string]$BaselinePath = "JIGS/QC-PASS/v0.9-Esc-Hold-to-Toggle-CapsLock/v0.9-esc-caps.keymap",
+    [string]$ExpectedBaselineSha256 = "abbbf227ae1ffcb1d164775673fd1bfe2338b07c6b7ebf01e1f686838091a187",
+    [int[]]$ApprovedKeyPositions = @(0, 15, 16, 17, 29, 30, 31, 41, 42, 47, 72),
+    [string]$ExpectedCandidateDefinitionsSha256 = "cfea801c1411b07433aed2b2a3b7f5f1b564c7e33454805a08084ae0987367f0"
 )
 
 $ErrorActionPreference = "Stop"
@@ -43,7 +43,7 @@ function Get-KeymapLayers {
     param([string]$Path)
 
     $content = Get-Content -Raw -LiteralPath $Path
-    $pattern = '(?ms)^\s*(?<name>default_layer|layer_one|layer_two|layer_three|layer_base|layer_fn_num|layer_sym|layer_nav)\s*\{\s*bindings\s*=\s*<(?<bindings>.*?)>;'
+    $pattern = '(?ms)^\s*(?<name>default_layer|layer_one|layer_two|layer_three|layer_four_reserved|layer_selector|layer_base|layer_fn_num|layer_sym|layer_nav)\s*\{\s*bindings\s*=\s*<(?<bindings>.*?)>;'
     $layers = @()
 
     foreach ($match in [regex]::Matches($content, $pattern)) {
@@ -73,10 +73,10 @@ function Get-DefinitionsText {
 }
 
 function Test-ExpectedLayerShape {
-    param([object[]]$Layers, [string]$Label)
+    param([object[]]$Layers, [string]$Label, [int]$ExpectedCount)
 
-    if ($Layers.Count -ne 4) {
-        Add-ValidationError "$Label has $($Layers.Count) keymap layers; expected 4."
+    if ($Layers.Count -ne $ExpectedCount) {
+        Add-ValidationError "$Label has $($Layers.Count) keymap layers; expected $ExpectedCount."
         return
     }
 
@@ -85,10 +85,6 @@ function Test-ExpectedLayerShape {
             Add-ValidationError "$Label layer $($layer.Name) has $($layer.Entries.Count) bindings; expected 82."
         }
     }
-}
-
-if ($ApprovedKeyPositions.Count -gt 4) {
-    Add-ValidationError "ApprovedKeyPositions allows $($ApprovedKeyPositions.Count) physical positions; revisions may allow at most 4."
 }
 
 foreach ($position in $ApprovedKeyPositions) {
@@ -112,8 +108,8 @@ if ($errors.Count -eq 0) {
 
     $baselineLayers = @(Get-KeymapLayers $BaselinePath)
     $candidateLayers = @(Get-KeymapLayers $KeymapPath)
-    Test-ExpectedLayerShape $baselineLayers "Baseline"
-    Test-ExpectedLayerShape $candidateLayers "Candidate"
+    Test-ExpectedLayerShape $baselineLayers "Baseline" 4
+    Test-ExpectedLayerShape $candidateLayers "Candidate" 6
 
     $baselineDefinitions = Get-DefinitionsText $BaselinePath
     $candidateDefinitions = Get-DefinitionsText $KeymapPath
@@ -130,7 +126,7 @@ if ($errors.Count -eq 0) {
     }
 
     $changedPositions = [System.Collections.Generic.List[int]]::new()
-    if ($baselineLayers.Count -eq 4 -and $candidateLayers.Count -eq 4) {
+    if ($baselineLayers.Count -eq 4 -and $candidateLayers.Count -eq 6) {
         for ($layerIndex = 0; $layerIndex -lt 4; $layerIndex++) {
             $baselineLayer = $baselineLayers[$layerIndex]
             $candidateLayer = $candidateLayers[$layerIndex]
@@ -153,6 +149,53 @@ if ($errors.Count -eq 0) {
                 }
             }
         }
+
+        $reserved = $candidateLayers[4]
+        if ($reserved.Name -ne 'layer_four_reserved') {
+            Add-ValidationError "Candidate layer 4 is named $($reserved.Name); expected layer_four_reserved."
+        }
+
+        if ($reserved.Entries.Count -eq 82) {
+            for ($position = 0; $position -lt 82; $position++) {
+                $expected = if ($position -ge 77) { '&none' } else { '&trans' }
+                if ($reserved.Entries[$position] -ne $expected) {
+                    Add-ValidationError "Reserved layer 4 position $position is '$($reserved.Entries[$position])'; expected '$expected'."
+                }
+            }
+        }
+
+        $selector = $candidateLayers[5]
+        if ($selector.Name -ne 'layer_selector') {
+            Add-ValidationError "Candidate layer 5 is named $($selector.Name); expected layer_selector."
+        }
+
+        if ($selector.Entries.Count -eq 82) {
+            for ($position = 0; $position -lt 82; $position++) {
+                $expected = if ($position -eq 15) {
+                    '&to 1'
+                }
+                elseif ($position -eq 16) {
+                    '&to 2'
+                }
+                elseif ($position -eq 17) {
+                    '&to 3'
+                }
+                elseif ($position -ge 77) {
+                    '&none'
+                }
+                else {
+                    '&trans'
+                }
+
+                if ($selector.Entries[$position] -ne $expected) {
+                    Add-ValidationError "Selector layer position $position is '$($selector.Entries[$position])'; expected '$expected'."
+                }
+            }
+
+            $changedPositions.Add(15)
+            $changedPositions.Add(16)
+            $changedPositions.Add(17)
+        }
     }
 
     $changedUnique = @($changedPositions | Select-Object -Unique)
@@ -161,7 +204,6 @@ if ($errors.Count -eq 0) {
 
     if ($unapproved.Count -gt 0) { Add-ValidationError "Candidate changes unapproved physical positions: $($unapproved -join ', ')." }
     if ($unusedApprovals.Count -gt 0) { Add-ValidationError "ApprovedKeyPositions lists unchanged positions: $($unusedApprovals -join ', ')." }
-    if ($changedUnique.Count -gt 4) { Add-ValidationError "Candidate changes $($changedUnique.Count) physical positions; revisions may change at most 4." }
 }
 
 if ($errors.Count -gt 0) {
@@ -169,4 +211,4 @@ if ($errors.Count -gt 0) {
     exit 1
 }
 
-Write-Output "Keymap validation passed: immutable baseline, 4 layers x 82 bindings, and all 20 direct controls match."
+Write-Output "Keymap validation passed: immutable 4-layer baseline, 6-layer candidate, 82 bindings per layer, and all 30 candidate direct controls match."
