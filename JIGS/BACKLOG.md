@@ -1,169 +1,78 @@
-# Keychron B1 Pro Conservative Firmware Backlog
+# Keychron B1 Pro Execution Backlog
 
-## Purpose and current state
+## Role
 
-This backlog replaces broad keymap rewrites with small, reviewable firmware
-revisions. The starting point for every future custom revision is the
-hardware-passed HRM baseline:
+This file records accepted work that surfaced outside the keymap specification
+during execution. It is not a task manifest or a session history. Live status
+belongs in `JIGS/HANDOFF.md`; verified firmware history belongs in
+`CHANGELOG.md` and the applicable `JIGS/QC-PASS/` release record.
 
-- Git tag: v1.0_HRM / commit d6966635.
-- Immutable copy: JIGS/v1.0-HRM-QC_PASSED.keymap.
-- Current test unit: restored to the verified factory firmware after the
-  failed v1.1_Layers0-3 deployment.
+## Locked baseline
 
-The factory-to-HRM delta is narrow: it adds the bilateral HRM definitions and
-rebinds the intended home-row modifier keys. By contrast, the failed
-HRM-to-v1.1 delta changed 110 lines and removed 210 lines. It also reassigned
-the B1 Pro's hidden physical Mac/Win-switch matrix position to Layer 1. That
-is the regression this process is designed to prevent.
+- Latest hardware-passed release: `v0.9_EscCaps`.
+- Archive:
+  `JIGS/QC-PASS/v0.9-Esc-Hold-to-Toggle-CapsLock/`.
+- Archived keymap SHA-256:
+  `abbbf227ae1ffcb1d164775673fd1bfe2338b07c6b7ebf01e1f686838091a187`.
+- Archived UF2 SHA-256:
+  `aa32efdee2712ac08044b7fbd5356a60e44101b89022d67cd3c5a6416241350a`.
+- Locking commit: `da7247c5b1268d769ba1a4135c4c09ea101e4652`.
+- The abandoned `v1.3-mac-win` revision is not a baseline and must not be
+  resumed. Any future direct-control work receives a new revision.
 
-## Non-negotiable workflow
+## Accepted key changes
 
-1. The active source keymap must never be the starting point for a new
-   revision. Copy the exact HRM QC-passed baseline to JIGS/QC-IN_PROGRESS/ and
-   work from that versioned copy.
-2. A revision may change **at most four named physical-key bindings**. A
-   supporting behavior definition is allowed only when it is used exclusively
-   by the named keys in that revision.
-3. Every changed binding and every supporting non-binding change must have one
-   task below. An unlisted change is out of scope and must not be changed.
-4. Two independent senior Keychron/ZMK reviewers must both issue PASS against
-   the exact same candidate-keymap SHA-256. Any source edit invalidates both
-   reviews. A BLOCK, unresolved finding, or disagreement prohibits compile.
-5. Before a UF2 is built, review the diff against the prior QC-passed keymap
-   by physical key and confirm the complete 20-binding direct-control map
-   remains intentional.
-6. Build exactly one pristine UF2 for that revision, run the focused
-   validator, and record its SHA-256. Do not begin the next revision until the
-   current revision has passed the written hardware QC checklist.
-7. Copy a UF2 to a test unit only after explicit user authorization and only
-   after confirming the mounted drive label is NRF52BOOT.
-8. Record every deployed UF2 in CHANGELOG.md. A failed hardware check is a
-   failed revision, not a baseline.
-9. After QC passes, preserve the exact keymap, UF2 hash, build command, and
-   test result in JIGS/QC-PASS/. Do not overwrite an existing QC-passed
-   artifact.
+Each accepted item covers one physical key unless stated otherwise. Version
+numbers count enabled keys cumulatively: the eight-key HRM baseline is v0.8,
+Escape is v0.9, and each subsequent enabled key increments the numeric suffix
+by one. Thus v0.11 is two revisions after v0.9.
 
-## Required artifact layout
-
-Each revision must create these files before any hardware flash:
-
-~~~text
-JIGS/QC-IN_PROGRESS/
-  v<major>.<minor>-<two-word-task>.keymap
-  v<major>.<minor>-<two-word-task>.manifest.md
-  v<major>.<minor>-<two-word-task>.review-a.md
-  v<major>.<minor>-<two-word-task>.review-b.md
-  v<major>.<minor>-<two-word-task>.QC.md
-  v<major>.<minor>-<two-word-task>.uf2
-  v<major>.<minor>-<two-word-task>.uf2.sha256
-~~~
-
-The shared artifact stem must match the pattern
-v<major>.<minor>-<two-word-task>, such as v1.2-esc-caps. The candidate
-keymap, manifest, both reviews, QC record, UF2, and UF2 hash must use that
-identical stem and stay in this directory together.
-
-The QC document must state the source baseline blob ID, candidate keymap
-SHA-256, every changed physical key, every supporting non-binding change, the
-expected result, validator result, pristine-build result, UF2 hash, and the
-hardware test result. A build is not QC-passed until the hardware results are
-recorded.
-
-## Mandatory two-engineer adversarial review
-
-Before compilation, create the two review records defined in
-JIGS/QC-IN_PROGRESS/REVIEW-PROTOCOL.md. Each independent reviewer must presume
-the candidate is broken and inspect:
-
-- the exact diff against the prior QC-passed baseline;
-- the candidate SHA-256 and baseline blob ID;
-- the manifest's one-to-four approved physical-key IDs;
-- all behavior definitions, combos, includes, and preprocessor constants;
-- the layer count and binding count for every layer;
-- all 20 direct-control bindings at physical positions 77 through 81 across
-  the four layers; and
-- the proposed build-input provenance.
-
-Compilation is permitted only when both records say PASS for the same candidate
-SHA-256 and contain no unresolved finding. The active shield keymap copied into
-the build input must then hash identically to the reviewed candidate immediately
-before configuration. Any unrelated source modification in the build workspace
-is an automatic BLOCK.
-
-## Global safety tasks
-
-- [x] **SAFE-00 — Freeze the source baseline.** Verify the working copy equals
-  JIGS/v1.0-HRM-QC_PASSED.keymap before starting a revision. Record the
-  expected blob ID e88289af51f7d2ec79af4c3fd864e4c434a8037f.
-- [x] **SAFE-01 — Preserve the 20-cell direct-control map.** Review the final
-  five bindings in each 82-binding layer. The immutable HRM baseline map is:
-  Layer 0 = &mo 2, &out OUT_BLE, &out OUT_24G, &out OUT_CHG, &out OUT_CHGD;
-  Layers 1, 2, and 3 = five &none bindings each.
-- [x] **SAFE-02 — Replace end-state regex validation.** Build a
-  baseline-aware validator that passes the immutable HRM baseline, rejects the
-  known-bad v1.1 keymap because its position-77 Mac/Win binding changed from
-  &mo 2 to &mo LAYER_FN_NUM, verifies ordered binding counts, and accepts
-  revision-specific assertions for only the one-to-four approved keys.
-- [x] **SAFE-03 — Capture a pre-flash rollback artifact.** Record the factory
-  UF2 path and SHA-256 in the revision QC document before any custom flash.
-
-## Key-change ledger
-
-Only the tasks below are authorized implementation targets. Each ID represents
-one physical key or direct control. A task remains blocked until its target
-behavior and test are written in the revision QC document.
-
-| ID | Physical key/control | Baseline binding | Approved target | Dependency | Required hardware evidence |
+| Version | ID | Physical key/layer | Locked-baseline binding | Accepted target | Dependency and required evidence |
 | --- | --- | --- | --- | --- | --- |
-| KEY-00 | **Mac/Win direct control** | &mo 2 | **Decision required.** No target is assumed. Its behavior must be explicitly selected before an edit is reviewed. | User decision; SAFE-01 | Both switch positions, normal Base typing, and all direct controls must pass. |
-| KEY-01 | **Esc** (top-left) | &kp ESC | Tap Esc; hold longer than 600 ms toggles Caps Lock. | New dedicated hold-tap behavior | Tap, 600+ ms hold, and rapid repeat must work. |
-| KEY-02 | **Caps** | &kp CLCK | Tap Esc; hold temporarily accesses Function/Numpad. | Function/Numpad content must be safe to expose | Tap must not latch a layer; hold/release must return to Base. |
-| KEY-03 | **Fn** (bottom-row physical Fn) | &mo 1 | Hold temporarily accesses Function/Numpad; tap arms the one-shot selector. | KEY-04 through KEY-06 must be ready before one-shot selection is enabled | Hold/release, one-shot timeout, and cancellation must be tested. |
-| KEY-04 | **Number-row 1** on Function/Numpad | Factory Bluetooth-profile action | Select persistent Function/Numpad layer. | KEY-03 and Function/Numpad QC | Tap after one-shot Fn must select Layer 1 only. |
-| KEY-05 | **Number-row 2** on Function/Numpad | Factory Bluetooth-profile action | Select persistent Symbols layer. | Symbols layer must have a separately approved key ledger | Tap after one-shot Fn must select Layer 2 only. |
-| KEY-06 | **Number-row 3** on Function/Numpad | Factory Bluetooth-profile action | Select persistent Navigation layer. | Navigation layer must have a separately approved key ledger | Tap after one-shot Fn must select Layer 3 only. |
-| KEY-07 | **Q** on Function/Numpad | Factory profile behavior | Tap selects Bluetooth profile 1; double-tap starts pairing profile 1. | Dedicated tap-dance definition | Verify select, pairing, and no unintended pairing on normal typing. |
-| KEY-08 | **W** on Function/Numpad | Factory profile behavior | Tap selects Bluetooth profile 2; double-tap starts pairing profile 2. | Dedicated tap-dance definition | Verify select, pairing, and no unintended pairing on normal typing. |
-| KEY-09 | **E** on Function/Numpad | Factory profile behavior | Tap selects Bluetooth profile 3; double-tap starts pairing profile 3. | Dedicated tap-dance definition | Verify select, pairing, and no unintended pairing on normal typing. |
-| KEY-10 | **G** | &lt 3 G | Tap G; hold temporarily accesses the shared Symbols layer. | Symbols layer key ledger and QC | Tap must remain G; hold/release must not latch. |
-| KEY-11 | **H** | &lt 2 H | Tap H; hold temporarily accesses the same Symbols layer as G. | Symbols layer key ledger and QC | Tap must remain H; both holds must reach the same layer. |
-| KEY-12 | **Backslash** | &kp BSLH | Tap backslash; hold temporarily accesses Navigation. | Navigation layer key ledger and QC | Tap must remain backslash; hold/release must not latch. |
-| KEY-13 | **Space** | &kp SPACE | Tap space; hold temporarily accesses Navigation. | Navigation layer key ledger and QC | Tap must remain space; hold/release must not latch. |
-| KEY-14 | **Tab** | &kp TAB | Tap Tab; hold Hyper. | Dedicated hold-tap definition | Test Tab tap and all four Hyper modifiers. |
-| KEY-15 | **Minus** on Function/Numpad | Factory three-second Boot hold-tap | **No binding change authorized.** Preserve it and add a regression test only. | SAFE-02 | Normal Base minus must type minus; Function/Numpad minus must enter bootloader only after its full hold time. |
-| KEY-16 | **Backslash** on Function/Numpad | Factory screenshot action | Print Screen shortcut specified by the keymap spec. | Exact host chord review | Confirm the intended operating-system screenshot result. |
-| KEY-17 | **Right Shift** on Function/Numpad | Factory emoji shortcut | Tap emoji shortcut; hold Right Shift. | Dedicated hold-tap definition | Test both paths independently and verify no stuck Shift. |
+| v0.10 | KEY-02 | Caps, Base position 42 | `&kp CLCK` | Tap Escape; hold momentarily accesses Function/Numpad | Function layer remains unchanged; tap must not latch; hold/release must return to Base. |
+| v0.11 | KEY-03 | Physical Fn, Base position 72 | `&mo 1` | Hold Function/Numpad; tap arms one-shot selector | Test hold/release, one-shot timeout, cancellation, and KEY-04 through KEY-06 selection. |
+| v0.12 | KEY-04 | Number-row 1 on Function/Numpad, position 15 | Factory Bluetooth action | Select persistent Function/Numpad | Depends on KEY-03; Esc remains the exit path. |
+| v0.13 | KEY-05 | Number-row 2 on Function/Numpad, position 16 | Factory Bluetooth action | Select persistent Symbols | Depends on KEY-03; Esc remains the exit path. |
+| v0.14 | KEY-06 | Number-row 3 on Function/Numpad, position 17 | Factory Bluetooth action | Select persistent Navigation | Depends on KEY-03; Esc remains the exit path. |
+| v0.15 | KEY-07 | Q on Function/Numpad, position 29 | Transparent | Tap selects Bluetooth profile 1; double-tap pairs profile 1 | Requires a dedicated tap-dance and profile-selection/pairing tests. |
+| v0.16 | KEY-08 | W on Function/Numpad, position 30 | Transparent | Tap selects Bluetooth profile 2; double-tap pairs profile 2 | Requires a dedicated tap-dance and profile-selection/pairing tests. |
+| v0.17 | KEY-09 | E on Function/Numpad, position 31 | Transparent | Tap selects Bluetooth profile 3; double-tap pairs profile 3 | Requires a dedicated tap-dance and profile-selection/pairing tests. |
+| v0.18 | KEY-10 | G, Base position 47 | `&lt 3 G` | Tap G; hold the shared Symbols layer | H already holds the same Symbols layer; test tap and momentary release. |
+| — | KEY-11 | H, Base | `&lt 2 H` | Already taps H and holds Symbols Layer 2 | No binding change required; retain as a v0.19 regression assertion. |
+| v0.19 | KEY-12 | Backslash, Base position 41 | `&kp BSLH` | Tap backslash; hold Navigation | Test tap and momentary release; Navigation content remains unchanged. |
+| — | KEY-13 | Space, Base | `&kp SPACE` | Tap Space; hold Navigation | Navigation content must be separately approved; test tap and momentary release. |
+| — | KEY-14 | Tab, Base | `&kp TAB` | Tap Tab; hold Hyper | Requires a dedicated hold-tap; test Tab and all four modifiers. |
+| — | KEY-15 | Minus on Function/Numpad | Factory three-second Boot hold-tap | Preserve binding; regression test only | Verify Base minus and delayed Fn+minus bootloader entry. |
+| — | KEY-16 | Backslash on Function/Numpad | Factory screenshot action | Use the specified host screenshot chord | Confirm the intended operating-system screenshot result. |
+| — | KEY-17 | Right Shift on Function/Numpad | Factory emoji shortcut | Tap Emoji; hold Right Shift | Requires a dedicated hold-tap; verify both paths and no stuck Shift. |
 
-## Explicitly unscheduled keys
+## Unscheduled work
 
-The Symbols and Navigation layer **content bindings** are not yet scheduled
-because the prior failed release created them as a broad row-by-row rewrite.
-Before any one of those bindings is modified, append a new KEY-xx entry to
-this ledger containing:
+- **Low priority — soft connectivity selection:** expose soft controls for
+  2.4G, BT1, BT2, and BT3. Requires a profile-aware BLE transport switch that
+  persists the requested BT profile across the BLE reboot; retain the physical
+  switch as recovery fallback until all four paths hardware-pass.
+- Direct-control work corresponding to the abandoned v1.3 experiment must be
+  assigned a new ID/revision before implementation.
+- Symbols and Navigation content bindings require one ledger row per physical
+  position before modification. Broad row rewrites remain prohibited.
+- No full-layer rename, global reformat, or unrelated cleanup is authorized by
+  this backlog.
 
-- one physical key;
-- its baseline binding;
-- one exact target binding;
-- its layer-activation dependency;
-- a hardware assertion; and
-- a revision assignment with no more than four changed physical keys.
+## Candidate workflow
 
-No full-row copy, layer rename, global reformat, or unrelated cleanup is
-permitted while implementing this backlog.
-
-## Revision gates
-
-| Gate | Permitted work | Stop condition |
-| --- | --- | --- |
-| R0 — validation hardening | SAFE-00 through SAFE-03 only; no key binding edits and no custom UF2 | Both reviewers PASS the baseline-aware validator design; it passes the HRM baseline and rejects known-bad v1.1. |
-| R1 — direct-control safety | KEY-00 only, after the user decides its intended Mac/Win behavior | Both reviewers PASS the exact candidate hash; build one UF2; both switch positions pass Base-layer typing QC. |
-| R2 onward | At most four ledger keys in dependency-safe order | Both reviews PASS, pristine build, validator, build-input hash proof, diff review, and all hardware assertions pass before the next revision. |
-
-## Current stop condition
-
-**R1 physical QC remains pending. R2 KEY-01 is QC-passed and archived at
-`JIGS/QC-PASS/v1.4-Esc-Hold-to-Toggle-CapsLock/`.** Hardware confirmed the
-Esc tap / 600 ms Caps Lock hold behavior and preserved the critical Fn+`-`
-behavior. Do not define a further candidate until its keymap and companion
-delivery report are ready for review.
+1. Start from the latest archived QA-passed keymap, never the active shield
+   keymap or an abandoned candidate.
+2. Create one companion delivery record containing the complete candidate
+   identity, side-by-side baseline comparison, all changed zero-based physical
+   positions, behavior changes, full direct-control result, and every related
+   code-file update outside the keymap.
+3. Run deterministic validation, then one senior review by default. Add a
+   second independent review for protected direct controls, Fn/boot/reset,
+   layer structure, combos, shared/runtime behavior, or three or more changed
+   physical positions. The ten-position v0.19 candidate requires two reviews.
+4. Request user approval of the exact reviewed candidate hash before build.
+5. After approval, prove the isolated build input matches the reviewed hash,
+   build one pristine UF2, record its hash, and obtain explicit authorization
+   before copying it to a verified `NRF52BOOT` volume.
+6. Promote only after every required hardware assertion is explicitly passed.

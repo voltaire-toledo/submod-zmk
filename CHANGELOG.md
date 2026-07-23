@@ -16,11 +16,12 @@ unit. A successful build alone does not create an entry.
 - **Result:** `<observed hardware result>`
 ```
 
-## v1.0_HRM — 2026-07-16
+## v0.8_HRM — 2026-07-16
 
 - **UF2:** `build-hrm/zephyr/zmk.uf2`
 - **SHA-256:** `4fce1323da5502539f690e705c6b55f1a21ca4de9220028f9ef8544a14439b0c`
-- **Source commit:** `d6966635` (annotated tag `v1.0_HRM`)
+- **Source commit:** `d6966635` (historical annotated tag `v1.0_HRM`;
+  release numbering corrected to `v0.8_HRM`)
 - **Test unit:** Keychron B1 Pro test unit.
 - **Reason:** Verify the bilateral home-row-modifier fix.
 - **Result:** Flashed successfully and recorded as the hardware-tested HRM
@@ -75,9 +76,9 @@ unit. A successful build alone does not create an entry.
   unmounted afterward. This proves host-side transfer only; Mac/Win typing and
   direct-control hardware QC remain pending.
 
-## v1.4_EscCaps_R2 — 2026-07-20
+## v0.9_EscCaps — 2026-07-20
 
-- **UF2:** `JIGS/QC-PASS/v1.4-Esc-Hold-to-Toggle-CapsLock/v1.4-esc-caps.uf2`
+- **UF2:** `JIGS/QC-PASS/v0.9-Esc-Hold-to-Toggle-CapsLock/v0.9-esc-caps.uf2`
 - **SHA-256:** `aa32efdee2712ac08044b7fbd5356a60e44101b89022d67cd3c5a6416241350a`
 - **Source commit:** `d6966635aae8e3f731e69d9437549281880c1480`, with the
   reviewed R2 candidate copied to the isolated build input and hash-proven.
@@ -87,3 +88,20 @@ unit. A successful build alone does not create an entry.
 - **Result:** QC PASS. The physical Esc key performed its specified tap and
   hold behavior, including Caps Lock toggle after a 600 ms hold. The critical
   Fn+`-` behavior also remained correct.
+
+## v0.19-ten-key-foundation — 2026-07-20
+
+- **UF2:** `JIGS/QC-IN_PROGRESS/v0.19-ten-key-foundation.uf2`
+- **SHA-256:** `8c35e645e3e1dd4bc67ae17688613132979d6fc3c0461f20deb20996fda55845`
+- **Source commit:** `da7247c5b1268d769ba1a4135c4c09ea101e4652`, with the
+  reviewed v0.19 candidate copied to the isolated build input and hash-proven
+  as `9fa0ef021e9992a97042949c0ec7fcc0cbdbe6fceb86424a36c6a623df8a7e92`.
+- **Test unit:** Keychron B1 Pro test unit; authorized `E:` / `NRF52BOOT`
+  bootloader volume.
+- **Reason:** Hardware acceptance of the v0.10--v0.19 ten-key foundation,
+  including retained direct controls and recovery paths.
+- **Result:** Copied to verified `E:` / `NRF52BOOT` as `zmk.uf2`; the volume
+  unmounted afterward. Hardware acceptance failed: the Caps-held Layer 1 test
+  exposed the candidate's mismatch with the specified Layer 0/Layer 1
+  function rows, and the Fn-selector procedure lacked a concrete test case.
+  The image is not a QC-passed release and must not be reused.

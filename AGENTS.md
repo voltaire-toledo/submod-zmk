@@ -2,6 +2,11 @@
 
 These directives guide AI agents (including Antigravity) throughout this repository's lifecycle.
 
+## Communication
+
+- Keep responses for this project compact and concise. Grammar may be
+  sacrificed when doing so improves brevity without losing essential meaning.
+
 ## Required Workflows
 
 1. **Initial Session Setup:**
@@ -78,3 +83,11 @@ These directives guide AI agents (including Antigravity) throughout this reposit
        the PRD during execution, not a task manifest or session history.
      - `JIGS/LEARNINGS.md`: limit it to verified troubleshooting notes, dead
        ends, and justified skill or automation candidates.
+
+9. **B1 Pro Build Environment:**
+   - Never use Docker or pull a Docker image for a B1 Pro firmware build,
+     including as a fallback.
+   - Use the native WSL build guide when available. When WSL is inaccessible,
+     use the validated Windows fallback: the repository `.venv` tools with
+     Zephyr SDK 0.15.2 and serialized Ninja.
+   - Do not change a Docker image pin to work around an unavailable toolchain.

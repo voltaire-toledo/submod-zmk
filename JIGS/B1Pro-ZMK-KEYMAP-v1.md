@@ -145,12 +145,85 @@ class Nav nav
   ┃   L_SHIFT    ┃    Z    ┃    X    ┃    C    ┃    V    ┃    B    ┃   N     ┃    M    ┃    ,    ┃    .    ┃    /    ┃        R_SHIFT          ┃
   ┃              ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃                         ┃
   ┣━━━━━━━━━━━┳━━┻━━━━━━━┳━┻━━━━━━━━━╋━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╋━━━━━━━━━┻━━━━┳━━━━┻━━━━━┳━┳━┻━━━━━━┳━━━━━━━━━┳━━━━━━━━┫
-  ┃           ┃          ┃           ┃                   TAP: SPACE                    ┃              ┃TAP:OSL(1)┃ ┃        ┃    ↑    ┃        ┃
-  ┃  L_CTRL   ┃  L_GUI   ┃   L_ALT   ┃                  HOLD: MO(3)                    ┃    R_ALT     ┃HOLD:MO(1)┃ ┃    ←   ┣━━━━━━━━━┫   →    ┃
+  ┃           ┃          ┃           ┃                                                 ┃              ┃TAP:OSL(1)┃ ┃        ┃    ↑    ┃        ┃
+  ┃  L_CTRL   ┃  L_ALT   ┃   L_CMD   ┃               * LT MAC_LNAV SPACE *             ┃    R_CMD     ┃HOLD:MO(1)┃ ┃    ←   ┣━━━━━━━━━┫   →    ┃
   ┃           ┃          ┃           ┃                                                 ┃              ┃          ┃ ┃        ┃    ↓    ┃        ┃
   ┗━━━━━━━━━━━┻━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━┻━━━━━━━━━━┛ ┗━━━━━━━━┻━━━━━━━━━┻━━━━━━━━┛
-```
 
+### NEW LAYER 0: LAYER_MAC_BASE
+default_layer {
+bindings = <
+//ESC            	  //f1            //f2          //f3          //f4          //f5        //f6      //f7            //f8          //f9                  //f10             //f11       //f12       //DEL                                              
+&esc_caps CLCK ESC  &kp F1          &kp F2        &kp F3        &kp F4        &kp F5      &kp F6    &kp F7          &kp F8        &kp F9                &kp F10           &kp F11     &kp F12     &kp DEL
+&kp GRAVE   		    &kp N1          &kp N2        &kp N3        &kp N4        &kp N5      &kp N6    &kp N7          &kp N8        &kp N9                &kp N0            &kp MINUS   &kp EQUAL   &kp BSPC 
+&kp TAB     		    &kp Q           &kp W         &kp E         &kp R         &kp T       &kp Y     &kp U           &kp I         &kp O                 &kp P             &kp LBKT    &kp RBKT    &lt 3 BSLH
+&lt 1 ESC   		    &lhm LCTRL A    &lhm LGUI S   &lhm LALT D   &lhm LSHFT F  &lt 2 G     &lt 2 H   &rhm RSHFT J    &rhm RALT K   &rhm RGUI L           &rhm RCTRL SEMI   &kp SQT                 &kp RET 
+&kp LSHFT   		    &kp Z           &kp X         &kp C         &kp V         &kp B       &kp N     &kp M           &kp COMMA     &kp DOT               &kp FSLH                                  &kp RSHFT
+&kp LCTRL           &uc LALT        &uc LCMD                                  &lt MAC_NAV SPACE                     &uc RCMD      &fn_layer_access 1 1  &kp LEFT          &kp UP      &kp DOWN    &kp RIGHT
+// RESERVED. DO NOT MODIFY
+&mo 2       		&out OUT_BLE    &out OUT_24G   &out OUT_CHG   &out OUT_CHGD 
+
+### NEW LAYER 1: MAC_FUNCTION_NUMPAD
+//ESC       //f1                    //f2                    //f3                                //f4                    //f5                //f6            //f7            //f8               //f9         //f10       //f11                       //f12               //DEL                                              
+&to 0       &kp C_BRIGHTNESS_DEC    &kp C_BRIGHTNESS_INC    &kp C_AC_DESKTOP_SHOW_ALL_WINDOWS   &kp  C_AC_MAC_LAUNCH    &kp C_AC_SEARCH     &kp C_AL_LOCK   &kp C_PREVIOUS  &kp C_PLAY_PAUSE   &kp C_NEXT   &kp C_MUTE  &kp C_VOLUME_DOWN           &kp C_VOLUME_UP     &kp DEL
+&trans      &to 1                   &to 2                   &to 3                               &trans                  &trans              &kp KP_DIVIDE   &kp KP_MULTIPLY &kp KP_MINUS       &kp KP_PLUS  &trans      &long_press_bootloader 0 0  &trans              &trans
+&trans      &td_bt_0 0              &td_bt_1 0              &td_bt_2 0                          &out OUT_24G            &kp DEL             &kp KP_N7       &kp KP_N8       &kp KP_N9          &kp BSPC     &trans      &trans                      &trans              &uc LG(LS(N4))
+&trans      &kp LCTRL               &kp LGUI                &kp LALT                            &kp LSHFT               &trans              &kp TAB         &kp KP_N4       &kp KP_N5          &kp KP_N6    &kp RET     &trans                      &trans
+&trans      &trans                  &trans                  &trans                              &trans                  &trans              &kp COMMA       &kp KP_N1       &kp KP_N2          &kp KP_N3    &kp KP_DOT                              &rshift_emoji RSHFT LC(LG(SPACE))
+&kp LCTRL   &uc LCMD                &uc LALT                &kp KP_N0                                                   &uc RCMD            &trans          &kp HOME        &kp PG_UP          &kp PG_DN    &kp END
+// RESERVED. DO NOT MODIFY
+&none       &none                   &none                   &none                               &none
+
+### DEFAULT LAYER 1: MAC_FUNCTION
+layer_one  {
+bindings = < 
+&kp ESC     &kp C_BRIGHTNESS_DEC    &kp C_BRIGHTNESS_INC    &kp C_AC_DESKTOP_SHOW_ALL_WINDOWS   &kp  C_AC_MAC_LAUNCH    &kp C_AC_SEARCH     &kp C_AL_LOCK   &kp C_PREVIOUS  &kp C_PLAY_PAUSE    &kp C_NEXT  &kp C_MUTE  &kp C_VOLUME_DOWN   &kp C_VOLUME_UP     &kp DEL  
+&trans      &bt_pair_0 0 0          &bt_pair_1 0 0          &bt_pair_2 0 0                      &bt_pair_3 0 0          &trans              &trans          &trans          &trans              &trans      &trans      &trans              &kp C_AC_SEARCH     &trans      
+&trans      &trans                  &trans                  &trans                              &trans                  &trans              &trans          &trans          &kp INS             &trans      &trans      &trans              &trans              &uc LG(LS(N4))
+&trans      &trans                  &trans                  &trans                              &trans                  &trans              &trans          &trans          &trans              &trans      &trans      &trans                      &trans                  
+&trans      &trans                  &trans                  &trans                              &trans                  &trans              &trans          &trans          &trans              &trans      &trans                                  &uc LC(LG(SPACE))
+&trans      &trans                  &trans                         &trans                                                                                                   &kp RCTRL           &trans        &kp HOME   &kp PG_UP   &kp PG_DN    &kp END  
+
+
+
+
+
+
+
+
+//win
+layer_two {
+bindings = <
+&kp ESC 	&kp F1 	               &kp F2 	                &kp F3 	                            &kp F4 	                &kp F5 	            &kp F6 	        &kp F7 	        &kp F8 	            &kp F9 	     &kp F10 	&kp F11 	         &kp F12 	         &kp DEL     
+&kp GRAVE	&kp N1 	               &kp N2 	                &kp N3 	                            &kp N4 	                &kp N5 	            &kp N6 	        &kp N7 	        &kp N8 	            &kp N9 	     &kp N0     &kp MINUS 	         &kp EQUAL 	         &kp BSPC
+&kp TAB 	&kp Q 	               &kp W                    &kp E 	                            &kp R 	                &kp T               &kp Y 	        &kp U 	        &kp I 	            &kp O 	     &kp P 		&kp LBKT 	         &kp RBKT 	         &kp BSLH 	 	
+&kp CLCK 	&kp A 	               &kp S 	                &kp D 	                            &kp F 	                &kp G 	            &kp H 	        &kp J 	        &kp K 	            &kp L 	     &kp SEMI 	&kp SQT                      &kp RET
+&kp LSHFT   &kp Z 	               &kp X 	                &kp C 	                            &kp V 	                &kp B 	            &kp N 	        &kp M 	        &kp COMMA           &kp DOT      &kp FSLH                                &kp RSHFT				
+&kp LCTRL 	&kp LGUI               &kp LALT                      &kp SPACE              		                                                                            &kp RALT 	        &mo 3 		  &kp LEFT 	 &kp UP      &kp DOWN 	&kp RIGHT 	
+//
+&none       &out OUT_BLE           &out OUT_24G             &out OUT_CHG                        &out OUT_CHGD 
+>;
+};
+//win
+layer_three {
+bindings = < 
+//f1                    //f2                    //f3                                //f4                        //f5            //f6              //f7            //f8              //f9        //f10           //f11                         //f12                     
+&trans  &kp C_BRIGHTNESS_DEC    &kp C_BRIGHTNESS_INC        &uc LG(TAB)                         &uc LG(E)               &kp C_AC_SEARCH     &uc LG(L)       &kp C_PREVIOUS  &kp C_PLAY_PAUSE    &kp C_NEXT  &kp C_MUTE  &kp C_VOLUME_DOWN           &kp C_VOLUME_UP      &trans   
+&trans  &bt_pair_0 0 0          &bt_pair_1 0 0              &bt_pair_2 0 0                      &bt_pair_3 0 0          &trans              &trans          &trans          &trans              &trans      &trans      &trans                      &kp C_AL_CALC        &trans          
+&trans  &trans                  &trans                      &trans                              &trans                  &trans              &trans          &trans          &kp INS             &trans      &trans      &trans                      &trans               &uc LG(LS(S))      
+&trans  &trans                  &trans                      &trans                              &trans                  &trans              &trans          &trans          &trans              &trans      &trans      &trans                              &trans  
+&trans  &trans                  &trans                      &trans                              &trans                  &trans              &trans          &trans          &trans              &trans      &trans                                          &uc LG(DOT) 
+&trans  &trans                  &trans                           &trans                                                                                                     &kp RCTRL           &trans      &kp HOME    &kp PG_UP    &kp PG_DN   &kp END    
+//
+&none   &none                   &none                       &none                               &none
+>;
+};
+
+
+
+
+};
+```
 ---
 
 ## Layer Index 1: Functions and Numpad (`LAYER_FN-NUM`, `layer_fn-num`)
@@ -188,8 +261,8 @@ class Nav nav
   ┃  ACTIVATE ┃  L_CTRL ┃  L_GUI  ┃  L_ALT  ┃ L_SHIFT ┃     ▼   ┃   TAB   ┃    4    ┃    5    ┃    6    ┃  ENTER  ┃     ▼   ┃         ▼        ┃
   ┃           ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃                  ┃
   ┣━━━━━━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━━━━━━━━━━━━━━━━━┫
-  ┃              ┃         ┃         ┃         ┃         ┃         ┃ NUMPAD  ┃ NUMPAD  ┃ NUMPAD  ┃ NUMPAD  ┃         ┃       TAP: Emoji        ┃
-  ┃        ▼     ┃     ▼   ┃     ▼   ┃     ▼   ┃     ▼   ┃    ,    ┃    1    ┃    2    ┃    3    ┃    .    ┃    /    ┃     HOLD: R_SHIFT       ┃
+  ┃              ┃         ┃         ┃         ┃         ┃         ┃         ┃ NUMPAD  ┃ NUMPAD  ┃ NUMPAD  ┃ NUMPAD  ┃      TAP: Emoji-m       ┃
+  ┃        ▼     ┃     ▼   ┃     ▼   ┃     ▼   ┃    ▼    ┃    ▼    ┃    ,    ┃    1    ┃    2    ┃    3    ┃    .    ┃     HOLD: R_SHIFT       ┃
   ┃              ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃                         ┃
   ┣━━━━━━━━━━━┳━━┻━━━━━━━┳━┻━━━━━━━━━╋━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╋━━━━━━━━━┻━━━━┳━━━━┻━━━━━┳━┳━┻━━━━━━┳━━━━━━━━━┳━━━━━━━━┫
   ┃           ┃          ┃           ┃                     NUMPAD                      ┃              ┃          ┃ ┃        ┃  PgUp   ┃        ┃
@@ -197,7 +270,7 @@ class Nav nav
   ┃           ┃          ┃           ┃                                                 ┃              ┃          ┃ ┃        ┃  PgDn   ┃        ┃
   ┗━━━━━━━━━━━┻━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━┻━━━━━━━━━━┛ ┗━━━━━━━━┻━━━━━━━━━┻━━━━━━━━┛
 
-```
+```\
 
 ---
 
