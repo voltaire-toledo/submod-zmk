@@ -29,7 +29,7 @@ unit. A successful build alone does not create an entry.
 
 ## Factory-2024-07-22 — 2026-07-19
 
-- **UF2:** `JIGS/zmk_b1pro_us_v1.0.3_2407221034_e013003c-271c-4949-b9a2-e58582ca12e3.uf2`
+- **UF2:** `B1PRO/zmk_b1pro_us_v1.0.3_2407221034_e013003c-271c-4949-b9a2-e58582ca12e3.uf2`
 - **SHA-256:** `7907dfdc6439f75f91492188797b73542bd9c9bfa44fe6ff56639de35d6f037f`
 - **Source commit:** Unavailable; vendor factory image.
 - **Test unit:** Available Keychron B1 Pro test unit.
@@ -54,7 +54,7 @@ unit. A successful build alone does not create an entry.
 
 ## v1.1_Layers0-3-Recovery — 2026-07-19
 
-- **UF2:** `JIGS/zmk_b1pro_us_v1.0.3_2407221034_e013003c-271c-4949-b9a2-e58582ca12e3.uf2`
+- **UF2:** `B1PRO/zmk_b1pro_us_v1.0.3_2407221034_e013003c-271c-4949-b9a2-e58582ca12e3.uf2`
 - **SHA-256:** `7907dfdc6439f75f91492188797b73542bd9c9bfa44fe6ff56639de35d6f037f`
 - **Source commit:** Unavailable; vendor factory image.
 - **Test unit:** Keychron B1 Pro test unit.
@@ -65,7 +65,7 @@ unit. A successful build alone does not create an entry.
 
 ## v1.3_MacWin-Preservation_R1 â€” 2026-07-20
 
-- **UF2:** `JIGS/QC-IN_PROGRESS/v1.3-mac-win.uf2`
+- **UF2:** `B1PRO/QC-IN_PROGRESS/v1.3-mac-win.uf2`
 - **SHA-256:** `3f96b329bf3a2922e5e60a5ead038a5d8533b6e7c1c943b8fcc7376d363821b7`
 - **Source commit:** `d6966635aae8e3f731e69d9437549281880c1480`, with the
   reviewed R1 candidate copied to the isolated build input and hash-proven.
@@ -78,7 +78,7 @@ unit. A successful build alone does not create an entry.
 
 ## v0.9_EscCaps — 2026-07-20
 
-- **UF2:** `JIGS/QC-PASS/v0.9-Esc-Hold-to-Toggle-CapsLock/v0.9-esc-caps.uf2`
+- **UF2:** `B1PRO/QC-PASS/v0.9-Esc-Hold-to-Toggle-CapsLock/v0.9-esc-caps.uf2`
 - **SHA-256:** `aa32efdee2712ac08044b7fbd5356a60e44101b89022d67cd3c5a6416241350a`
 - **Source commit:** `d6966635aae8e3f731e69d9437549281880c1480`, with the
   reviewed R2 candidate copied to the isolated build input and hash-proven.
@@ -91,7 +91,7 @@ unit. A successful build alone does not create an entry.
 
 ## v0.19-ten-key-foundation — 2026-07-20
 
-- **UF2:** `JIGS/QC-IN_PROGRESS/v0.19-ten-key-foundation.uf2`
+- **UF2:** `B1PRO/QC-IN_PROGRESS/v0.19-ten-key-foundation.uf2`
 - **SHA-256:** `8c35e645e3e1dd4bc67ae17688613132979d6fc3c0461f20deb20996fda55845`
 - **Source commit:** `da7247c5b1268d769ba1a4135c4c09ea101e4652`, with the
   reviewed v0.19 candidate copied to the isolated build input and hash-proven
@@ -105,3 +105,19 @@ unit. A successful build alone does not create an entry.
   exposed the candidate's mismatch with the specified Layer 0/Layer 1
   function rows, and the Fn-selector procedure lacked a concrete test case.
   The image is not a QC-passed release and must not be reused.
+
+## v0.23-mac-win-full-layers — 2026-07-30
+
+- **UF2:** `B1PRO/QC-PASS/0.23-All_MacOS_Layers_defined/v0.23-mac-win-full-layers.uf2`
+- **SHA-256:** `b77bd6be9ffc28f1383c962a79fec0150970538e6e0fad5bcaa519db85b80444`
+- **Source commit:** Working-tree candidate based on
+  `8f1c2329928f1d63ae091af98d1a8807159cee70`; no exact candidate commit is
+  claimed.
+- **Test unit:** Keychron B1 Pro test unit; unit identifier not supplied.
+- **Reason:** Accept the complete twelve-layer Mac and Windows keymap,
+  retained recovery/direct controls, corrected Escape/Caps behavior, and
+  fixed-keymap vendor integration.
+- **Result:** QC PASS reported by the user on 2026-07-30. All cumulative
+  hardware assertions passed, including Layers 0--11, Fn+minus recovery,
+  Escape/Caps one-hold toggling, protected direct controls, output switching,
+  and Mac/Win layer selection.
