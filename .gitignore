@@ -9,3 +9,4 @@
 /.isolated-builds/
 *.DS_Store
 __pycache__
+/zephyr-sdk.zip
