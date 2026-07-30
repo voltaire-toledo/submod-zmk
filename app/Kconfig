@@ -605,6 +605,16 @@ config ZMK_LAUNCHER
     bool "enable via dynamic setting"
     default y
 
+config ZMK_LAUNCHER_FIXED_KEYMAP
+    bool "retain vendor launcher utilities without the dynamic-map transport"
+    depends on ZMK_LAUNCHER
+    default n
+    help
+      Keep the Keychron support objects required by the B1 Pro firmware while
+      omitting the Launcher HID endpoint and dynamic-map initialization. Use
+      this for a fixed ZMK keymap that is intentionally not configurable by
+      Keychron Launcher, VIA, or Vial.
+
     
 module = ZMK
 module-str = zmk

@@ -122,6 +122,10 @@ int zmk_usb_hid_via_send(const uint8_t *report, size_t len) {
 }
 
 static int zmk_usb_hid_via_init(const struct device *_arg) {
+#if CONFIG_ZMK_LAUNCHER_FIXED_KEYMAP
+    ARG_UNUSED(_arg);
+    return 0;
+#else
     hid_via_dev = device_get_binding("HID_1");
     if (hid_via_dev == NULL) {
         LOG_ERR("Unable to locate HID device");
@@ -132,6 +136,7 @@ static int zmk_usb_hid_via_init(const struct device *_arg) {
     usb_hid_init(hid_via_dev);
     via_init();
     return 0;
+#endif
 }
 
 SYS_INIT(zmk_usb_hid_via_init, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);

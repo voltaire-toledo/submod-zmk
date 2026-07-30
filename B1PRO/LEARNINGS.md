@@ -18,6 +18,10 @@
   82-binding layer.
 - Rebinding Base position 77 caused the failed v1.1 layer trap. Every candidate
   must compare all 20 direct-control cells against its QA-passed baseline.
+- User-confirmed hardware mapping: Layer 0's final-row `&mo <layer>` binding
+  is selected by the physical Win switch. Future candidates must use
+  `&mo LYR_W_BASE`, and therefore define at least `LYR_W_BASE` at layer index
+  6 before changing that binding.
 
 ### Bootloader recovery
 
@@ -26,6 +30,15 @@
 - Hardware recovery is available through the recessed reset control with the
   keyboard in Win/Cable mode. A UF2 transfer is valid only after the mounted
   volume label is confirmed as `NRF52BOOT`.
+
+### Esc hold-to-Caps Lock
+
+- `&kt CLCK` is a key-state toggle, not a normal press/release. In a hold-tap
+  it can leave Caps Lock asserted after the physical Esc release, so a second
+  hold is needed to complete the next toggle.
+- The verified single-hold form keeps the 600 ms `tap-preferred` policy and
+  uses `bindings = <&kp>, <&kp>;`: the hold sends a normal Caps Lock press and
+  release once, while a short press still sends Esc.
 
 ### Windows build environment
 
@@ -45,6 +58,29 @@
 - The baseline-aware validator is the fast regression gate for layer shape,
   approved physical positions, definition drift, and protected direct
   controls.
+
+### Rejected v0.19--v0.22 candidate sequence
+
+- v0.19 reached hardware testing and failed. Its Layer 0/Layer 1 function rows
+  did not match the authoritative diagrams, and its Fn-selector checklist did
+  not define a concrete transparent-key action and expected result.
+- v0.20 was based on a user-edited derivative of failed v0.19 rather than the
+  locked v0.9 baseline. Its broader position set was not covered by the pinned
+  validator, two required reviews were pending, and it never reached a
+  trustworthy build or hardware result.
+- v0.21 compiled only after repairing malformed tap-dance binding cells. That
+  repair changed the keymap identity after the pre-build review, so a new
+  independent review was required and hardware QC never completed.
+- v0.22 initially disagreed with its illustration at Symbols Caps and defined
+  only 80 bindings on Layer 5. The repaired seven-layer image built, but it
+  still omitted Windows Layers 7--11 and never completed hardware QC.
+- At cleanup, the observed v0.19, v0.21, and v0.22 worktree keymap hashes did
+  not match the reviewed or build-input identities in their release records.
+  A candidate identity mismatch is itself a stop condition: never infer that
+  an edited worktree copy is the reviewed firmware source.
+- v0.23 resolved the cumulative specification, layer-shape, Windows-map,
+  placeholder, Escape/Caps, and fixed-keymap integration gaps and is the first
+  revision after v0.9 reported as a complete hardware QC pass.
 
 ## Justified automation candidate
 

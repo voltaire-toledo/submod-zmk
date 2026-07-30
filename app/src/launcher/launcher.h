@@ -204,7 +204,11 @@ enum{
 #define EECONFIG_SIZE 0
 #define MATRIX_COLS DT_PROP_LEN(DT_NODELABEL(kscan0), col_gpios)
 #define MATRIX_ROWS DT_PROP_LEN(DT_NODELABEL(kscan0), row_gpios)
+#if CONFIG_ZMK_LAUNCHER_FIXED_KEYMAP
+#define DYNAMIC_KEYMAP_LAYER_COUNT 1
+#else
 #define DYNAMIC_KEYMAP_LAYER_COUNT ZMK_KEYMAP_LAYERS_LEN
+#endif
 #define TOTAL_EEPROM_BYTE_COUNT 2560//4000
 #define KEYMAP_LEN (MATRIX_COLS*MATRIX_ROWS*2)
 // Keyboard level code can change where VIA stores the magic.
