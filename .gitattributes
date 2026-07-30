@@ -4,3 +4,7 @@
 # Docker on Windows.
 .bashrc text eol=lf
 *.sh text eol=lf
+
+# Keymap release identities use raw SHA-256 values; keep them byte-stable.
+*.keymap text eol=lf
+*.uf2 binary

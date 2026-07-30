@@ -1,6 +1,6 @@
 param(
-    [string]$KeymapPath = "B1PRO/QC-PASS/0.23-All_MacOS_Layers_defined/v0.23-mac-win-full-layers.keymap",
-    [string]$DesignPath = "B1PRO/DESIGN/B1Pro-ZMK-KEYMAP-V2.md",
+    [string]$KeymapPath = "B1PRO/releases/0.23-All_MacOS_Layers_defined/v0.23-mac-win-full-layers.keymap",
+    [string]$DesignPath = "B1PRO/DESIGN/B1Pro-ZMK-KEYMAP.md",
     [string]$ExpectedCandidateSha256 = "984d7250d8eb08977c4a6de168b69c25edd48376c70d6056b59f936697da7813"
 )
 
