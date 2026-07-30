@@ -12,7 +12,7 @@ These directives guide AI agents (including Antigravity) throughout this reposit
 1. **Initial Session Setup:**
    - Search the environment for ZMK-related skills or plugins and install/reference them in this repo.
 2. **Session Start Checklist:**
-   - At the beginning of *every* session, always read the [JIGS/](file:///C:/Users/Jigs/CODE/VT-ZMK-B1-Pro/JIGS) markdown documents (`PLAN.md`, `HANDOFF.md`, etc.) to align on goals, objectives, and current status.
+   - At the beginning of *every* session, always read the [B1PRO/](./B1PRO/) markdown documents (`PLAN.md`, `HANDOFF.md`, etc.) to align on goals, objectives, and current status.
 3. **Session End Checklist:**
    - Do not create transcripts, narrative recaps, or documentation solely to
      record a session.
@@ -57,7 +57,7 @@ These directives guide AI agents (including Antigravity) throughout this reposit
      not a QC pass.
    - Move (do not copy) the exact approved keymap, UF2, UF2 SHA-256 sidecar,
      and complete release record into a unique
-     `JIGS/QC-PASS/<revision-and-description>/` directory.
+     `B1PRO/QC-PASS/<revision-and-description>/` directory.
    - Verify the archived UF2 hash against its SHA-256 sidecar and update the
      existing `CHANGELOG.md` revision entry to use the archived UF2 path and
      record the observed passing hardware results, including required retained
@@ -65,23 +65,29 @@ These directives guide AI agents (including Antigravity) throughout this reposit
    - Update the backlog or handoff stop condition to identify the archived
      QC-passed release and the next permitted gate. Never promote untested or
      transfer-only candidates; leave their artifacts outside `QC-PASS`.
-7. **JIGS Document Cadence:**
-   - `JIGS/HANDOFF.md` is the live task manifest only: `Done`, `In progress`,
+   - Every candidate QC checklist is cumulative and deterministic: retain every
+     applicable assertion from prior checklists, add assertions for each newly
+     changed physical position or behavior, and provide an explicit expected
+     result for every testable key position. Treat each iteration as
+     regression coverage unless the specification explicitly removes or changes
+     an assertion.
+7. **B1PRO Document Cadence:**
+   - `B1PRO/HANDOFF.md` is the live task manifest only: `Done`, `In progress`,
      and `Remaining`. Replace stale status rather than appending history.
-   - `JIGS/BACKLOG.md` contains only work that surfaces outside the PRD during
+   - `B1PRO/BACKLOG.md` contains only work that surfaces outside the PRD during
      execution. Promote an accepted item to an approved candidate or remove it
      when resolved; do not use it as a session log.
-   - `JIGS/LEARNINGS.md` contains only verified troubleshooting notes, dead
+   - `B1PRO/LEARNINGS.md` contains only verified troubleshooting notes, dead
      ends, and justified skill or automation candidates. Do not add narrative
      recaps or speculative lessons.
 8. **Required Next-Run Completion:**
    - Before beginning any new firmware work, complete the following unfinished
      document-role updates and report their completion to the user:
-     - `JIGS/HANDOFF.md`: create or replace it as the live task manifest with
+     - `B1PRO/HANDOFF.md`: create or replace it as the live task manifest with
        only `Done`, `In progress`, and `Remaining` sections.
-     - `JIGS/BACKLOG.md`: make it the register for work that surfaces outside
+     - `B1PRO/BACKLOG.md`: make it the register for work that surfaces outside
        the PRD during execution, not a task manifest or session history.
-     - `JIGS/LEARNINGS.md`: limit it to verified troubleshooting notes, dead
+     - `B1PRO/LEARNINGS.md`: limit it to verified troubleshooting notes, dead
        ends, and justified skill or automation candidates.
 
 9. **B1 Pro Build Environment:**

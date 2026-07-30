@@ -2,7 +2,7 @@
 
 ## User request
 
-Review `JIGS/B1Pro-ZMK-KEYMAP.md`, confirm whether its first four layer
+Review `B1PRO/DESIGN/B1Pro-ZMK-KEYMAP-v1.md`, confirm whether its first four layer
 definitions are understandable, and determine whether ZMK can distinguish
 Tap, Tap+Hold, and Hold for one key.
 
@@ -45,7 +45,7 @@ Tap, Tap+Hold, and Hold for one key.
 
 ## Evidence checked
 
-- `JIGS/B1Pro-ZMK-KEYMAP.md`
+- `B1PRO/DESIGN/B1Pro-ZMK-KEYMAP-v1.md`
 - `app/boards/shields/keychron/b1/us/keychron_b1_us.keymap`
 - `app/dts/bindings/behaviors/zmk,behavior-hold-tap.yaml`
 - `app/src/behaviors/behavior_hold_tap.c`

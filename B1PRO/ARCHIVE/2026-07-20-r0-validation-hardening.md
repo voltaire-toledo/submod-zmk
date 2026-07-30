@@ -8,7 +8,7 @@ UF2, flash, or hardware work.
 ## Work completed
 
 - Replaced `scripts/validate-keymap.ps1` with a baseline-aware validator.
-- Added the v1.2 manifest and QC record under `JIGS/QC-IN_PROGRESS/`.
+- Added the v1.2 manifest and QC record under `B1PRO/QC-IN_PROGRESS/`.
 - Refreshed Reviewer A's record for the exact staged candidate SHA-256.
 - Corrected the backlog's direct-control map to match the immutable HRM
   baseline: Layer 0 has the Mac/Win and output controls; Layers 1 through 3

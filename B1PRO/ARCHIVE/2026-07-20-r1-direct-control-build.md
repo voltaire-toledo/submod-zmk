@@ -9,7 +9,7 @@
 
 ## Candidate and reviews
 
-- Candidate: `JIGS/QC-IN_PROGRESS/v1.3-mac-win.keymap`.
+- Candidate: `B1PRO/QC-IN_PROGRESS/v1.3-mac-win.keymap`.
 - Candidate and immutable HRM baseline are byte-identical; both SHA-256:
   `faa1612fc82c6c23bfa43e1f1551a576a6a3feeaee2bbb0af9d9c3cd219d056d`.
 - Reviewer A and independently assigned Reviewer B both recorded PASS.
@@ -24,7 +24,7 @@
 - The local Zephyr SDK 0.15.2 archive supplied the nRF toolchain. The Windows
   host required a serialized Ninja run after its parallel static-library phase
   failed; the final generated UF2 is valid.
-- Preserved artifact: `JIGS/QC-IN_PROGRESS/v1.3-mac-win.uf2` (435,712 bytes),
+- Preserved artifact: `B1PRO/QC-IN_PROGRESS/v1.3-mac-win.uf2` (435,712 bytes),
   SHA-256 `3f96b329bf3a2922e5e60a5ead038a5d8533b6e7c1c943b8fcc7376d363821b7`.
 - Verified `E:` label `NRF52BOOT`, recorded the revision in `CHANGELOG.md`,
   copied the UF2 as `E:\zmk.uf2`, and observed the bootloader volume unmount.

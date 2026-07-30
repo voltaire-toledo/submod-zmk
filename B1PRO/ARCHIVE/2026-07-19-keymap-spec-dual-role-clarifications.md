@@ -26,7 +26,7 @@
 
 ## Documentation update
 
-`JIGS/B1Pro-ZMK-KEYMAP.md` now records the decisions in its Layer 0 and
+`B1PRO/DESIGN/B1Pro-ZMK-KEYMAP-v1.md` now records the decisions in its Layer 0 and
 `LAYER_FN-NUM` sections and labels them as desired behavior requiring firmware
 work, rather than claiming the active keymap already provides them.
 

@@ -4,7 +4,7 @@
 
 Both independent R0 reviewers PASSed the exact candidate:
 
-- Candidate: `JIGS/QC-IN_PROGRESS/v1.2-validator-hardening.keymap`
+- Candidate: `B1PRO/QC-IN_PROGRESS/v1.2-validator-hardening.keymap`
 - SHA-256: `faa1612fc82c6c23bfa43e1f1551a576a6a3feeaee2bbb0af9d9c3cd219d056d`
 - Reviewer A: `v1.2-validator-hardening.review-a.md`
 - Reviewer B: `v1.2-validator-hardening.review-b.md`

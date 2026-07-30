@@ -2,11 +2,11 @@
 
 ## User request
 
-Review `JIGS/BACKLOG.md` and prepare the first review for testing.
+Review `B1PRO/BACKLOG.md` and prepare the first review for testing.
 
 ## Work completed
 
-- Read the current JIGS documentation. `JIGS/PLAN.md` and `JIGS/HANDOFF.md`
+- Read the current B1PRO documentation. `B1PRO/PLAN.md` and `B1PRO/HANDOFF.md`
   are deleted in the working tree, so their last tracked versions were used as
   historical context only.
 - Searched installed Codex and agent skill/plugin locations for ZMK, Keychron,
@@ -22,7 +22,7 @@ Review `JIGS/BACKLOG.md` and prepare the first review for testing.
 ## Outcome
 
 Reviewer A is recorded in
-`JIGS/QC-IN_PROGRESS/v1.2-validator-hardening.review-a.md` with a BLOCK verdict.
+`B1PRO/QC-IN_PROGRESS/v1.2-validator-hardening.review-a.md` with a BLOCK verdict.
 No build, UF2 copy, hardware flash, or CHANGELOG entry was made.
 
 ## Next safe action
