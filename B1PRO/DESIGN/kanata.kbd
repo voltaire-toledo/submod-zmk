@@ -85,7 +85,7 @@
   lbracket lbrc
   backtick grv
   excl     S-1
-  
+
   caret    S-6
   amp      S-7
   asterisk S-8

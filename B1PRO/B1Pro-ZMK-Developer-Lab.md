@@ -1,7 +1,7 @@
 # B1 Pro ZMK developer lab
 
-Audience: new firmware interns  
-Time: 60–90 minutes  
+Audience: new firmware interns
+Time: 60–90 minutes
 Outcome: prepare a repeatable Windows ZMK environment, make one safe B1 Pro keymap change, and produce a locally verified UF2.
 
 ## Lab rules

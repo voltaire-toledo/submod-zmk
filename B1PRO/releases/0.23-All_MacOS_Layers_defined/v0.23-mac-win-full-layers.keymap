@@ -70,7 +70,7 @@
         bindings = <&mo>, <&sl>;
     };
 
-  
+
     td_bt_0: td_bt_0 {
         compatible = "zmk,behavior-tap-dance";
         label = "TD_BT_0";
@@ -217,10 +217,10 @@
 
     layer_m_base {
       bindings = <
-        //ESC                     //f1          //f2          //f3        //f4          //f5              //f6              //f7          //f8          //f9          //f10            //f11       //f12                 //DEL                                              
+        //ESC                     //f1          //f2          //f3        //f4          //f5              //f6              //f7          //f8          //f9          //f10            //f11       //f12                 //DEL
         &esc_caps CLCK ESC        &kp F1        &kp F2        &kp F3      &kp F4        &kp F5            &kp F6            &kp F7        &kp F8        &kp F9        &kp F10          &kp F11     &kp F12               &kp DEL
         &kp GRAVE                 &kp N1        &kp N2        &kp N3      &kp N4        &kp N5            &kp N6            &kp N7        &kp N8        &kp N9        &kp N0           &kp MINUS   &kp EQUAL             &kp BSPC
-        &mt LC(LS(LG(LALT))) TAB  &kp Q         &kp W         &kp E       &kp R         &kp T             &kp Y             &kp U         &kp I         &kp O         &kp P            &kp LBKT    &kp RBKT              &lt LYR_M_NAV1 BSLH   
+        &mt LC(LS(LG(LALT))) TAB  &kp Q         &kp W         &kp E       &kp R         &kp T             &kp Y             &kp U         &kp I         &kp O         &kp P            &kp LBKT    &kp RBKT              &lt LYR_M_NAV1 BSLH
         &lt LYR_M_FUNC ESC        &lhm LCTRL A  &lhm LGUI S   &lhm LALT D &lhm LSHFT F  &lt LYR_M_SYM1 G  &lt LYR_M_SYM1 H  &rhm RSHFT J  &rhm RALT K   &rhm RGUI L   &rhm RCTRL SEMI              &kp SQT               &kp RET
         &kp LSHFT                 &kp Z         &kp X         &kp C       &kp V         &kp B             &kp N             &kp M         &kp COMMA     &kp DOT       &kp FSLH         &kp RSHFT
         &kp LCTRL                 &uc LALT      &uc LCMD      &lt LYR_M_NAV1 SPACE      &uc RCMD          &fn_layer_access LYR_M_FUNC LYR_M_MCRO        &kp LEFT      &kp UP           &kp DOWN    &kp RIGHT
@@ -256,8 +256,8 @@
     ┗━━━━━━━━━━━┻━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━┻━━━━━━━━━━┛ ┗━━━━━━━━┻━━━━━━━━━┻━━━━━━━━┛
     */
     layer_m_func {
-      bindings = < 
-        //ESC           //F1                  //F2                  //F3                                //f4                  //f5              //f6            //f7            //f8              //f9          //f10         //f11                       //f12             //DEL                                              
+      bindings = <
+        //ESC           //F1                  //F2                  //F3                                //f4                  //f5              //f6            //f7            //f8              //f9          //f10         //f11                       //f12             //DEL
         &to LYR_M_BASE  &kp C_BRIGHTNESS_DEC  &kp C_BRIGHTNESS_INC  &kp C_AC_DESKTOP_SHOW_ALL_WINDOWS   &kp C_AC_MAC_LAUNCH   &kp C_AC_SEARCH   &uc LC(LA(M))   &kp C_PREVIOUS  &kp C_PLAY_PAUSE  &kp C_NEXT    &kp C_MUTE    &kp C_VOLUME_DOWN           &kp C_VOLUME_UP   &kp DEL
         &trans          &td_bt_0 0            &td_bt_1 0            &td_bt_2 0                          &out OUT_24G          &trans            &trans          &kp KP_MULTIPLY &kp KP_DIVIDE     &kp KP_PLUS   &kp KP_MINUS  &long_press_bootloader 0 0  &kp C_AC_SEARCH   &trans
         &trans          &trans                &trans                &trans                              &out OUT_24G          &trans            &kp DEL         &kp KP_N7       &kp KP_N8         &kp KP_N9     &kp BSPC      &trans                      &trans            &uc LG(LS(N4))
@@ -297,7 +297,7 @@
     */
     layer_m_sym1 {
       bindings = <
-        //ESC           //f1       //f2      //f3      //f4       //f5       //f6       //f7              //f8              //f9                 //f10          //f11          //f12          //DEL                                              
+        //ESC           //f1       //f2      //f3      //f4       //f5       //f6       //f7              //f8              //f9                 //f10          //f11          //f12          //DEL
         &to LYR_M_BASE  &kp F13    &kp F14   &kp F15   &kp F16    &kp F17    &kp F18    &kp F19           &kp F20           &kp F21              &kp F22        &kp F23        &kp F24        &trans
         &trans          &trans     &trans    &trans    &trans     &trans     &trans     &trans            &trans            &trans               &uc LG(N0)     &uc LG(MINUS)  &uc LG(EQUAL)  &trans
         // p28--p36: ` ! @ # $ % ^ & *; p37 O: -/_; p38 P: =/+; p39--p41 transparent.
@@ -588,7 +588,7 @@
      * [Caps A..; Enter] => inert Caps, modifiers, Home/Left/Down/Right/End.
      * [Shift Z X C V B N M , . / RShift] => Ctrl+Z/X/C/V/B, PgUp/PgDn, tab and slash chords.
      * [Ctrl Alt Win Space Alt Fn arrows] => mouse-speed 1/2/3, inert space/alt/fn, arrow cluster.
-     
+
     ┏━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━┓
     ┃           ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃        ┃
     ┃TO(LYR_W_  ┃   F13   ┃   F14   ┃   F15   ┃   F16   ┃   F17   ┃   F18   ┃   F19   ┃   F20   ┃   F21   ┃   F22   ┃   F23   ┃   F24   ┃   ▼    ┃
@@ -628,13 +628,13 @@
       >;
     };
 
-    /* WINDOWS LAYER 10: LYR_W_UAT — illustration: [Esc] TO(W base); every other physical position is inert. 
-    
-    
+    /* WINDOWS LAYER 10: LYR_W_UAT — illustration: [Esc] TO(W base); every other physical position is inert.
+
+
 - **Description:** Reserved UAT layer. Escape returns to Layer 0; every other
   position is inert.
 
-    
+
     ┏━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━┓
     ┃           ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃        ┃
     ┃TO(LYR_W_  ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃        ┃
@@ -661,7 +661,7 @@
     ┃           ┃          ┃           ┃                                                 ┃              ┃          ┃ ┃        ┃         ┃        ┃
     ┗━━━━━━━━━━━┻━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━┻━━━━━━━━━━┛ ┗━━━━━━━━┻━━━━━━━━━┻━━━━━━━━┛
     */
-    
+
     layer_w_uat {
       bindings = <
         //ESC           //f1    //f2    //f3    //f4    //f5    //f6    //f7    //f8    //f9    //f10   //f11   //f12   //DEL

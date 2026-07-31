@@ -10,10 +10,10 @@ index 915b5373a5..74867d434b 100644
 +++ b/scripts/requirements-extras.txt
 @@ -10,7 +10,7 @@ gitlint
  junit2html
- 
+
  # helper for developers - code formatter
 -clang-format>=1.13x
 +clang-format>=1.13
- 
+
  # Script used to build firmware images for NXP LPC MCUs.
  lpc_checksum
