@@ -13,7 +13,7 @@ Leeloo-Micro is a 3x5x5m derivative of Leeloo v2; inheriting the column stagger 
 - 3x5x5m Split Keyboard
 - Support for Kailh Low Profile Choc switches with 18mm x 18mm spacing.
 - All switch locations are socketed.
-- Support for Alps Alpine EC11 Rotary Encoders—one on each side, in one of two locations.
+- Support for Alps Alpine EC11 Rotary Encoders-one on each side, in one of two locations.
   - Rotary encoder locations are socketed.
 - nice!view Displays are inherently supported, socketed, and no extra wiring is required.
 - Support for per-switch RGB underglow.

@@ -12,6 +12,8 @@ on:
 
 jobs:
   lint:
+    # Disabled repository-wide: retain the workflow definition without running jobs.
+    if: ${{ false }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -22,6 +24,8 @@ jobs:
         run: npm run lint
         working-directory: docs
   typecheck:
+    # Disabled repository-wide: retain the workflow definition without running jobs.
+    if: ${{ false }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

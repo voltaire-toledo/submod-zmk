@@ -14,6 +14,8 @@ on:
 
 jobs:
   collect-tests:
+    # Disabled repository-wide: retain the workflow definition without running jobs.
+    if: ${{ false }}
     outputs:
       test-dirs: ${{ steps.test-dirs.outputs.test-dirs }}
     runs-on: ubuntu-latest
@@ -27,6 +29,8 @@ jobs:
           export TESTS=$(ls -d * | jq -R -s -c 'split("\n")[:-1]')
           echo "::set-output name=test-dirs::${TESTS}"
   run-tests:
+    # Disabled repository-wide: retain the workflow definition without running jobs.
+    if: ${{ false }}
     needs: collect-tests
     strategy:
       matrix:

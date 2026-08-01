@@ -6,7 +6,7 @@ Keyboard Designer: [clicketysplit.ca](https://clicketysplit.ca)
 GitHub: [ClicketySplit](https://github.com/ClicketySplit)
 Hardware Supported: Pro Micro, Elite-C, and nice!nano v2
 
-Leeloo v2 has been designed from scratch—again. Everything from the wiring schematic to its case. Leeloo v2 still keeps the column stagger that it's known for, along with its low profile design.
+Leeloo v2 has been designed from scratch-again. Everything from the wiring schematic to its case. Leeloo v2 still keeps the column stagger that it's known for, along with its low profile design.
 
 ## Features/Differences from Leeloo v1
 
@@ -30,7 +30,7 @@ Leeloo v2 has been designed from scratch—again. Everything from the wiring sch
 - 4x6x5m Split Keyboard
 - Support for both Low Profile Choc switches, and Box/MX switches; 19.05mm x 19.05mm spacing.
 - 90% of the switches are socketed; with the exception to the rotary encoder positions.
-- Support for Alps Alpine EC11 Rotary Encoders—one on each side, in one of three locations.
+- Support for Alps Alpine EC11 Rotary Encoders-one on each side, in one of three locations.
 - Support for OLED Displays or nice!view Displays.
   - nice!view displays require a wire to be soldered from the CS Pin on nice!view display to P0.22 or D4 on the nice!nano.
 - Support for both 110mAh or 700mAh batteries.

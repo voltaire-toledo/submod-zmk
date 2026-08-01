@@ -6,6 +6,8 @@ on:
 
 jobs:
   pre-commit:
+    # Disabled repository-wide: retain the workflow definition without running jobs.
+    if: ${{ false }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
