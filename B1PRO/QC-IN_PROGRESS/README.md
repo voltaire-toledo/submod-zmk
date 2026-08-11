@@ -15,4 +15,4 @@ protected direct controls, physical Fn/boot/reset behavior, layer structure,
 combos, shared/runtime behavior, or three or more physical positions.
 
 User approval of the exact reviewed keymap hash is required before build.
-Hardware promotion follows the root `AGENTS.md` rules.
+Hardware promotion moves passed candidates to `B1PRO/releases/vx.x/` per root `AGENTS.md` rules.
