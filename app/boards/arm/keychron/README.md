@@ -28,5 +28,3 @@ west build -p -b keychron
 ```sh
 west build -p -b keychron && west flash
 ```
-
-
