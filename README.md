@@ -63,6 +63,12 @@ py -3.11 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r app\scripts\requirements.txt
 ```
 
+> [!NOTE]
+> The commands above will create new folders in the repo's root directory
+> • `/__python__/`
+> • `/.venv/`
+> • `/.west/`
+
 Patch the downloaded Zephyr workspace once:
 
 ```powershell
@@ -77,40 +83,48 @@ input is
 `app\boards\shields\keychron\b1\us\keychron_b1_us.keymap`. Make changes in a
 working candidate; never edit an approved file under `B1PRO/releases/` in place.
 
-Install [Zephyr SDK 0.15.2](https://github.com/zephyrproject-rtos/sdk-ng/releases/tag/v0.15.2),
-then configure and compile the B1 Pro target. The example below uses the
+#### Install [Zephyr SDK 0.15.2](https://github.com/zephyrproject-rtos/sdk-ng/releases/tag/v0.15.2):
+
+1. Download the [Zephyr SDK 0.15.2 zip file for your platform](https://github.com/zephyrproject-rtos/sdk-ng/releases/tag/v0.15.2).
+
+
+2. Extract it to your `ZMK/.isolated-builds/sdk-r1/` so that the path 
+   `[ZMK-repo]/.isolated-builds/sdk-r1/zephyr-sdk-0.15.2/arm-zephyr-aabi/bin/arm-zephyr-eabi-gcc.exe` 
+   exists. 
+
+
+3. Configure and compile the B1 Pro target. The example below uses the
 repository-local SDK location from the validated Windows lab. Extract the SDK
 there, or change `$Sdk` to its exact installation directory:
 
-```powershell
-$Repo = (Resolve-Path .).Path
-$Sdk = Join-Path $Repo '.isolated-builds\sdk-r1\zephyr-sdk-0.15.2'
-$CMakeBin = Join-Path $Repo '.venv\Lib\site-packages\cmake\data\bin'
-$Python = Join-Path $Repo '.venv\Scripts\python.exe'
-$BuildDir = 'build\local-b1pro'
+    ```powershell
+    $Repo = (Resolve-Path .).Path
+    $Sdk = Join-Path $Repo '.isolated-builds\sdk-r1\zephyr-sdk-0.15.2'
+    $CMakeBin = Join-Path $Repo '.venv\Lib\site-packages\cmake\data\bin'
+    $Python = Join-Path $Repo '.venv\Scripts\python.exe'
+    $BuildDir = 'build\local-b1pro'
 
-$env:PATH = "$CMakeBin;$(Join-Path $Repo '.venv\Scripts');$env:PATH"
-$env:ZEPHYR_TOOLCHAIN_VARIANT = 'zephyr'
-$env:ZEPHYR_SDK_INSTALL_DIR = $Sdk
+    $env:PATH = "$CMakeBin;$(Join-Path $Repo '.venv\Scripts');$env:PATH"
+    $env:ZEPHYR_TOOLCHAIN_VARIANT = 'zephyr'
+    $env:ZEPHYR_SDK_INSTALL_DIR = $Sdk
 
-& $Python -m west build -s app -b keychron -d $BuildDir -p always --cmake-only -- -DSHIELD=keychron_b1_us
-if ($LASTEXITCODE -ne 0) { throw 'CMake configuration failed.' }
+    & $Python -m west build -s app -b keychron -d $BuildDir -p always --cmake-only -- -DSHIELD=keychron_b1_us
+    if ($LASTEXITCODE -ne 0) { throw 'CMake configuration failed.' }
 
-& ninja -C $BuildDir -j1
-if ($LASTEXITCODE -ne 0) { throw 'Firmware compilation failed.' }
-```
+    & ninja -C $BuildDir -j1
+    if ($LASTEXITCODE -ne 0) { throw 'Firmware compilation failed.' }
+    ```
 
-The UF2 is created at `build\local-b1pro\zephyr\zmk.uf2`. Hash it before
+4. The UF2 is created at `build\local-b1pro\zephyr\zmk.uf2`. Hash it before
 testing:
 
-```powershell
-Get-FileHash -Algorithm SHA256 .\build\local-b1pro\zephyr\zmk.uf2
-```
+    ```powershell
+    Get-FileHash -Algorithm SHA256 .\build\local-b1pro\zephyr\zmk.uf2
+    ```
 
 A successful build proves that the firmware configured, compiled, and linked;
 it does not prove hardware behavior or qualify the UF2 for `releases/`. See the
-native WSL build guide
-or the [Windows developer lab](./B1PRO/B1Pro-ZMK-Developer-Lab.md) for the
+native WSL build guide or the **[Windows developer lab](./B1PRO/B1Pro-ZMK-Developer-Lab.md)** for the
 complete validation and release workflow.
 
 ## This repository's Git branches
