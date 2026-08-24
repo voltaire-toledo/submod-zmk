@@ -19,9 +19,11 @@ It gives programming identifiers and acronyms a pleasant path without dedicating
 
 This works best on a Nav/utility layer, where the visual or positional pairing makes the dance memorable. Advantage360 ZMK keymap (https://gist.github.com/robkisk/89cfde34687e02e84e565033d38652d8)
 
-#### Coding punctuation: tap (, double tap ), triple tap emits ().
+#### Coding punctuation: tap (, double tap ).
 
-The same idea applies to [], {}, and quote pairs. A community member calls this “dancing brackets.” Reddit discussion (https://www.reddit.com/r/ErgoMechKeyboards/comments/ry53fp)
+The same idea applies to [], {}, and quote pairs.
+> **Keymap Strategy Rule:** *Shortcut key sequences should not exceed the number of steps without a shortcut.*
+> Multi-tap dances should not exceed 2 taps; 3-step sequences (e.g. open + close + left arrow) belong on dedicated momentary macro layers instead of triple-tap dances.
 
 #### Smart mode key: tap = one-shot Numpad/Symbol picker, double = lock that layer, triple = return to Base.
 
@@ -34,3 +36,4 @@ For your key immediately left of the arrows, I’d use a custom hold-tap-not tap
 
 Then reserve tap dance for safer keys: Caps, a punctuation key, or Bluetooth/output controls. I would not assign bootloader/reset to
 a multi-tap gesture.
+

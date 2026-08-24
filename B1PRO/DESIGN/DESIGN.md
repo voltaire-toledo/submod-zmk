@@ -19,3 +19,11 @@ Unlike traditional C projects that use a single `Makefile`, ZMK relies on Zephyr
 * **Homerow Mods Validation**: [Keychron/qmk_firmware Issue #455](https://github.com/Keychron/qmk_firmware/issues/455) (Authored by `4cio`). 
   * Validates that the Keychron B1 Pro stock firmware uses `hold-preferred` mod-tap, causing phantom modifiers.
   * Confirms that injecting custom firmware with `flavor = "tap-preferred"` and `quick-tap-ms = <200>` entirely eliminates the phantom modifier issue during fast typing on the B1 Pro.
+
+## Keymap Strategy & Ergonomics Rules
+
+1. **Shortcut Sequence Efficiency**:
+   * *Shortcut key sequences should not exceed the number of steps without a shortcut.*
+   * Multi-tap dances must not exceed 2 taps (e.g. 1-tap open bracket, 2-tap close bracket).
+   * 3-step or compound actions (e.g. `open + close + left arrow`) are mapped to dedicated momentary macro layers accessed via bilateral hold keys (`Z` and `/`), rather than triple-tap sequences.
+

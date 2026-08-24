@@ -1,15 +1,20 @@
 # Firmware Build Changelog
 
-## v0.25-candidate (candidate — unapproved) - 2026-08-11
+## v0.25-candidate (candidate — unapproved) - 2026-08-24
 
 **Baseline:** `v0.24-sync-layers`  
 **Baseline keymap:** `B1PRO/releases/v0.24/v0.24-sync-layers.keymap`  
 **Baseline SHA-256:** `c94b0555cd77d61e9fc96bef28b73367ed491a5db3c2788f720825dfea73c30c`  
 **Candidate keymap:** `B1PRO/QC-IN_PROGRESS/v0.25-candidate.keymap`  
-**Candidate keymap SHA-256:** TBD  
-**Candidate UF2:** Pending compilation  
+**Candidate keymap SHA-256:** `57f9aa9387ad0846e08e697d97080dccac4444044eabf77a7875b0613248f337`  
+**Candidate UF2:** `B1PRO/QC-IN_PROGRESS/v0.25-candidate.uf2`  
+**Candidate UF2 SHA-256:** `49bb7968279d41d7592750e4338ca49c4a5c0f8cbfe72cf5ae88ac5fc49c8ea6`  
 
-- **Status:** Scaffolding complete; unapproved candidate awaiting binding definition and build.
+- **Status:** Firmware compiled successfully; awaiting user flash and hardware QC testing.
+- **Scope:**
+  - **SYMBOL Layers (2 & 8):** Tap dances reduced to max 2 taps (1-tap: open, 2-tap: close) with `tapping-term-ms = <350>`. Layer 2 row 5 angle brackets aligned with Layer 8 on key `M`. Restored direct `&kp MINUS` and `&kp EQUAL` (with `Shift + F` yielding `_` and `+`; rapid double-tap yields `--` and `==`). Removed unused `td_sym_minus_underscore` and `td_sym_equal_plus` behaviors.
+  - **MACRO Layers (5 & 11):** Activated via hold `Z` or hold `/` (`FSLH`) on Base layers (0 & 6). Assigned auto-closing bracket macros (`mcro_parens`, `mcro_braces`, `mcro_brackets`, `mcro_angle_brackets` emitting `open + close + left arrow`) to physical positions `J`, `K`, `L`, `M`.
+  - **Design Strategy:** Appended rule: *"Shortcut key sequences should not exceed the number of steps without a shortcut."*
 
 ---
 
