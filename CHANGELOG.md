@@ -1,20 +1,35 @@
 # Firmware Build Changelog
 
-## v0.25-candidate (candidate — unapproved) - 2026-08-24
+## v0.26-candidate (candidate — unapproved) - 2026-09-08
+
+**Baseline:** `v0.25-unified`  
+**Baseline keymap:** `B1PRO/releases/v0.25/v0.25-unified.keymap`  
+**Baseline SHA-256:** `387170f69dedd7bd46d30c57f07a79410649efec6d27f0b862a357adb46bb461`  
+**Candidate keymap:** `B1PRO/QC-IN_PROGRESS/v0.26-candidate.keymap`  
+**Candidate keymap SHA-256:** `387170f69dedd7bd46d30c57f07a79410649efec6d27f0b862a357adb46bb461`  
+**Candidate UF2:** Pending compilation  
+
+- **Status:** Scaffolding complete; unapproved candidate awaiting binding definition and build.
+
+---
+
+## v0.25-unified (released) - 2026-09-08
 
 **Baseline:** `v0.24-sync-layers`  
 **Baseline keymap:** `B1PRO/releases/v0.24/v0.24-sync-layers.keymap`  
 **Baseline SHA-256:** `c94b0555cd77d61e9fc96bef28b73367ed491a5db3c2788f720825dfea73c30c`  
-**Candidate keymap:** `B1PRO/QC-IN_PROGRESS/v0.25-candidate.keymap`  
-**Candidate keymap SHA-256:** `57f9aa9387ad0846e08e697d97080dccac4444044eabf77a7875b0613248f337`  
-**Candidate UF2:** `B1PRO/QC-IN_PROGRESS/v0.25-candidate.uf2`  
-**Candidate UF2 SHA-256:** `49bb7968279d41d7592750e4338ca49c4a5c0f8cbfe72cf5ae88ac5fc49c8ea6`  
+**Archived keymap:** `B1PRO/releases/v0.25/v0.25-unified.keymap`  
+**Archived keymap SHA-256:** `387170f69dedd7bd46d30c57f07a79410649efec6d27f0b862a357adb46bb461`  
+**Archived UF2:** `B1PRO/releases/v0.25/v0.25-unified.uf2`  
+**Archived UF2 SHA-256:** `3dbdb159c9f41be6e41fb32c9af25dd59440ae8c3c3fb2889af34084174f1936`  
 
-- **Status:** Firmware compiled successfully; awaiting user flash and hardware QC testing.
+- **Status:** Hardware QC PASSED on 2026-09-08. Promoted and archived into `B1PRO/releases/v0.25/`.
 - **Scope:**
-  - **SYMBOL Layers (2 & 8):** Tap dances reduced to max 2 taps (1-tap: open, 2-tap: close) with `tapping-term-ms = <350>`. Layer 2 row 5 angle brackets aligned with Layer 8 on key `M`. Restored direct `&kp MINUS` and `&kp EQUAL` (with `Shift + F` yielding `_` and `+`; rapid double-tap yields `--` and `==`). Removed unused `td_sym_minus_underscore` and `td_sym_equal_plus` behaviors.
-  - **MACRO Layers (5 & 11):** Activated via hold `Z` or hold `/` (`FSLH`) on Base layers (0 & 6). Assigned auto-closing bracket macros (`mcro_parens`, `mcro_braces`, `mcro_brackets`, `mcro_angle_brackets` emitting `open + close + left arrow`) to physical positions `J`, `K`, `L`, `M`.
-  - **Design Strategy:** Appended rule: *"Shortcut key sequences should not exceed the number of steps without a shortcut."*
+  - **BASE Layers (0 & 6):** Fn key next to R_CMD / R_ALT updated: 1-tap `TG(FUNC)`, 2-tap `OSL(MCRO)`, Hold `MO(FUNC)`.
+  - **FUNC Layers (1 & 7):** Esc pos 0 tap returns to Base, 3s hold toggles F-row exchange (`&change`). Numrow-6 set to `&kp KP_NUM` (NumLock), Numrow 7-0 set to `*`, `/`, `+`, `-`, Q-T set to `&trans`, Y assigned `{Delete}`, P assigned `{Backspace}`.
+  - **SYMBOL Layers (2 & 8):** Fn row set to `F1-F12`, Num row set to `F13-F24`. Left-hand ASDF assigned opening brackets `<`, `[`, `{`, `(` with HRM holds. Right-hand JKLM assigned closing characters `)`, `}`, `]`, `>` (1-tap) and auto-closing macros `(_)`, `{_}`, `[_]`, `<_>` (2-tap).
+  - **MACRO Layers (5 & 11):** Activated via hold `Z` or hold `/` (`FSLH`) on Base layers (0 & 6). Assigned auto-closing bracket macros to physical positions `J`, `K`, `L`, `M`.
+  - **Hardware Combos:** Fn + J + Z (3s hold) -> Factory Reset (`&long_press_recover`); Fn + B -> Battery Level LED (`&out OUT_BAT`); Fn + Win (3s hold on Win Fn layer) -> Toggle Win Key Lock (`&long_press_fn_win`).
 
 ---
 
