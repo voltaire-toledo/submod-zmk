@@ -563,4 +563,104 @@ void leds_turnoff(void)
   led_24G_set_state(LED_PEER_STATE_DISCONNECTED);
 }
 
+#include <zmk/events/layer_state_changed.h>
+#include <zmk/events/position_state_changed.h>
+#include <zmk/keymap.h>
+
+#define LED_EFFECT_LAYER_PULSE(_color) \
+	{ \
+		.steps = ((const struct led_effect_step[]) { \
+			{ .color = _color,        .substep_count = 1, .substep_time = 0 },   /* Turn ON instantly */ \
+			{ .color = LED_NOCOLOR(), .substep_count = 1, .substep_time = 500 }, /* Stay ON for 500ms, then turn OFF */ \
+			{ .color = _color,        .substep_count = 1, .substep_time = 250 }, /* Stay OFF for 250ms, then turn ON */ \
+			{ .color = LED_NOCOLOR(), .substep_count = 1, .substep_time = 600 }, /* Stay ON for 600ms, then turn OFF */ \
+			{ .color = LED_NOCOLOR(), .substep_count = 1, .substep_time = 250 }, /* Stay OFF for 250ms, then loop */ \
+		}), \
+		.step_count = 5, \
+		.loop_forever = true, \
+	}
+
+static const struct led_effect led_effect_layer_func = LED_EFFECT_LAYER_PULSE(LED_COLOR(0xff, 0xff, 0xff)); // White
+static const struct led_effect led_effect_layer_sym  = LED_EFFECT_LAYER_PULSE(LED_COLOR(0x00, 0xff, 0x00)); // Green
+static const struct led_effect led_effect_layer_nav  = LED_EFFECT_LAYER_PULSE(LED_COLOR(180, 0, 255));      // Purple
+static const struct led_effect led_effect_layer_mcro = LED_EFFECT_LAYER_PULSE(LED_COLOR(255, 100, 0));      // Orange
+
+static const struct led_effect led_effect_double_blink_once = {
+	.steps = ((const struct led_effect_step[]) {
+		{ .color = LED_COLOR(0xff, 0xff, 0xff), .substep_count = 1, .substep_time = 0 },
+		{ .color = LED_NOCOLOR(),               .substep_count = 1, .substep_time = 250 },
+		{ .color = LED_COLOR(0xff, 0xff, 0xff), .substep_count = 1, .substep_time = 200 },
+		{ .color = LED_NOCOLOR(),               .substep_count = 1, .substep_time = 250 },
+		{ .color = LED_NOCOLOR(),               .substep_count = 1, .substep_time = 10 },
+	}),
+	.step_count = 5,
+	.loop_forever = false,
+};
+
+static const struct led_effect led_effect_win_lock = {
+	.steps = ((const struct led_effect_step[]) {
+		{ .color = LED_COLOR(0x00, 0xff, 0xff), .substep_count = 1, .substep_time = 0 },
+		{ .color = LED_NOCOLOR(),               .substep_count = 1, .substep_time = 350 },
+		{ .color = LED_COLOR(0x00, 0xff, 0xff), .substep_count = 1, .substep_time = 200 },
+		{ .color = LED_NOCOLOR(),               .substep_count = 1, .substep_time = 350 },
+		{ .color = LED_NOCOLOR(),               .substep_count = 1, .substep_time = 10 },
+	}),
+	.step_count = 5,
+	.loop_forever = false,
+};
+
+void led_win_lock_indication(void) {
+    leds[LED_BAT].effect = &led_effect_win_lock;
+    led_update(&leds[LED_BAT]);
+}
+
+static int custom_layer_led_listener(const zmk_event_t *ev) {
+    const struct zmk_layer_state_changed *layer_ev = as_zmk_layer_state_changed(ev);
+    if (layer_ev) {
+        if (zmk_keymap_layer_active(5) || zmk_keymap_layer_active(11)) {
+            // MCRO layers (5 Mac / 11 Win): Pulsing Orange
+            leds[LED_BAT].effect = &led_effect_layer_mcro;
+            led_update(&leds[LED_BAT]);
+        } else if (zmk_keymap_layer_active(3) || zmk_keymap_layer_active(9)) {
+            // NAV layers (3 Mac / 9 Win): Pulsing Purple
+            leds[LED_BAT].effect = &led_effect_layer_nav;
+            led_update(&leds[LED_BAT]);
+        } else if (zmk_keymap_layer_active(2) || zmk_keymap_layer_active(8)) {
+            // SYM layers (2 Mac / 8 Win): Pulsing Green
+            leds[LED_BAT].effect = &led_effect_layer_sym;
+            led_update(&leds[LED_BAT]);
+        } else if (zmk_keymap_layer_active(1) || zmk_keymap_layer_active(7)) {
+            // FUNC layers (1 Mac / 7 Win): Pulsing White
+            leds[LED_BAT].effect = &led_effect_layer_func;
+            led_update(&leds[LED_BAT]);
+        } else {
+            // Base layers (0 Mac / 6 Win) and UAT (4 / 10): Turn off RGB LED and stop any active effects
+            k_timer_stop(&leds[LED_BAT].timer);
+            leds[LED_BAT].effect = NULL;
+            leds[LED_BAT].effect_step = 0;
+            leds[LED_BAT].effect_substep = 0;
+            if (charge_led_state != LED_BAT_LOW && charge_led_state != LED_BAT_CHARGING && charge_led_state != LED_BAT_CHARGE_DONE) {
+                set_off(&leds[LED_BAT]);
+            } else {
+                led_charge_set_state(charge_led_state);
+            }
+        }
+        return ZMK_EV_EVENT_BUBBLE;
+    }
+
+    const struct zmk_position_state_changed *pos_ev = as_zmk_position_state_changed(ev);
+    if (pos_ev && pos_ev->state) {
+        // Numrow-6 (pos 20 / KP_NUM) pressed while on Func/Num layers (1 or 7): Quick double flash (white), then off
+        if (pos_ev->position == 20 && (zmk_keymap_layer_active(1) || zmk_keymap_layer_active(7))) {
+            leds[LED_BAT].effect = &led_effect_double_blink_once;
+            led_update(&leds[LED_BAT]);
+        }
+    }
+    return ZMK_EV_EVENT_BUBBLE;
+}
+
+ZMK_LISTENER(custom_layer_led, custom_layer_led_listener);
+ZMK_SUBSCRIPTION(custom_layer_led, zmk_layer_state_changed);
+ZMK_SUBSCRIPTION(custom_layer_led, zmk_position_state_changed);
+
 SYS_INIT(leds_init, APPLICATION, CONFIG_ZMK_LED_INIT_PRIORITY);
