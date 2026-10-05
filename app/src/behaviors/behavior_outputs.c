@@ -131,6 +131,8 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
         {
             fn_win_lock = ~fn_win_lock;
             LOG_ERR("fn win lock:%d",fn_win_lock);
+            void led_win_lock_indication(void);
+            led_win_lock_indication();
         }
         return 0;
     default:

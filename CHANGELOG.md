@@ -1,19 +1,36 @@
 # Firmware Build Changelog
 
-## v0.26-candidate (candidate — unapproved) - 2026-09-08
+## v0.25.8-candidate (IN QC) - 2026-10-05
 
-**Baseline:** `v0.25-unified`  
+**Baseline:** `v0.25-unified` (recalled)  
 **Baseline keymap:** `B1PRO/releases/v0.25/v0.25-unified.keymap`  
 **Baseline SHA-256:** `387170f69dedd7bd46d30c57f07a79410649efec6d27f0b862a357adb46bb461`  
-**Candidate keymap:** `B1PRO/QC-IN_PROGRESS/v0.26-candidate.keymap`  
-**Candidate keymap SHA-256:** `387170f69dedd7bd46d30c57f07a79410649efec6d27f0b862a357adb46bb461`  
-**Candidate UF2:** Pending compilation  
+**Candidate keymap:** `B1PRO/QC-IN_PROGRESS/v0.25.1-candidate.keymap`  
+**Candidate keymap SHA-256:** `e202ee1f0ffab93a94bf6419b1d85d5d3987399708d3fa68d67bd9b42f721b8e`  
+**Candidate UF2:** `B1PRO/QC-IN_PROGRESS/v0.25.1-build_5.uf2`  
+**Candidate UF2 SHA-256:** `5515c95cd02c71fdf9e87d855957a61c527a5a260dc1dd9b0cea93af2109aaf0`  
 
-- **Status:** Scaffolding complete; unapproved candidate awaiting binding definition and build.
+- **Status:** Keymap linted and compiled to UF2 (`v0.25.1-build_5.uf2`); awaiting hardware test and approval.
+- **Bugfixes & Enhancements:**
+  - **HRM Retro-Tap:** Enabled `retro-tap;` on `lhm` and `rhm` so releasing a held homerow mod without chording emits the tap character instead of being discarded.
+  - **HRM Positional Triggers:** Fixed row-boundary index shifts in `hold-trigger-key-positions` across both hands (`lhm` and `rhm`).
+  - **HRM Timing Relaxations:** Relaxed timings by +75ms (`tapping-term-ms = 275`, `quick-tap-ms = 250`, `require-prior-idle-ms = 225`).
+  - **NAV Layer Spacebar:** Changed pos 53 in `LYR_M_NAV1` (Layer 3) and `LYR_W_NAV1` (Layer 9) to `&trans` to ensure proper space repeat and transparent fallback.
+  - **Direct Battery Indicator Binding:** Directly bound key `B` (pos 60) on `layer_m_func` (Layer 1) and `layer_w_func` (Layer 7) to `&out OUT_BAT`, removing redundant single-key pseudo-combo.
+  - **Windows GPU Reset Shortcut:** Bound key `V` (pos 59) on `layer_w_func` (Layer 7) to `&uc LG(LC(LS(B)))` (`Win + Ctrl + Shift + B`) to re-initialize graphics display drivers.
+  - **Layer & Control LED Notification Engine:**
+    - **Base Layers (0 & 6) / UAT (4 & 10):** Turns off RGB LED effects cleanly on layer entry while preserving CapsLock LED state.
+    - **Layer Hold Pulsing Pattern:** Modeled on factory cadence (ON 500ms -> OFF 250ms -> ON 600ms -> OFF 250ms, pulsing for key hold duration):
+      - **Func Layers (1 & 7):** Pulsing White (`#FFFFFF`).
+      - **Symbol Layers (2 & 8):** Pulsing Green (`#00FF00`).
+      - **Nav Layers (3 & 9):** Pulsing Purple (`#B400FF`).
+      - **Macro Layers (5 & 11):** Pulsing Orange (`#FF6400`).
+    - **NumLock (Func pos 20 / KP_NUM):** Double white flash (250ms on / 200ms pause / 250ms on).
+    - **Windows Key Lock Confirmation:** Double Cyan flash (350ms on / 200ms pause / 350ms on) on `combo_win_lock` (`OUT_FN_WIN`), distinct from all layer colors.
 
 ---
 
-## v0.25-unified (released) - 2026-09-08
+## v0.25-unified (recalled) - 2026-09-08
 
 **Baseline:** `v0.24-sync-layers`  
 **Baseline keymap:** `B1PRO/releases/v0.24/v0.24-sync-layers.keymap`  
@@ -23,7 +40,7 @@
 **Archived UF2:** `B1PRO/releases/v0.25/v0.25-unified.uf2`  
 **Archived UF2 SHA-256:** `3dbdb159c9f41be6e41fb32c9af25dd59440ae8c3c3fb2889af34084174f1936`  
 
-- **Status:** Hardware QC PASSED on 2026-09-08. Promoted and archived into `B1PRO/releases/v0.25/`.
+- **Status:** RECALLED on 2026-09-12. Do not use prior v0.25 releases; superseded by v0.25.1.
 - **Scope:**
   - **BASE Layers (0 & 6):** Fn key next to R_CMD / R_ALT updated: 1-tap `TG(FUNC)`, 2-tap `OSL(MCRO)`, Hold `MO(FUNC)`.
   - **FUNC Layers (1 & 7):** Esc pos 0 tap returns to Base, 3s hold toggles F-row exchange (`&change`). Numrow-6 set to `&kp KP_NUM` (NumLock), Numrow 7-0 set to `*`, `/`, `+`, `-`, Q-T set to `&trans`, Y assigned `{Delete}`, P assigned `{Backspace}`.
@@ -51,20 +68,20 @@
 Mac-labelled functions move from `LYR_M_FUNC` (Layer 1) to `LYR_M_BASE`
 (Layer 0); F1–F12 move to the Fn layer.
 
-| Position | v0.23 Layer 0 | v0.24 Layer 0 | v0.23 Layer 1 | v0.24 Layer 1 |
-| --- | --- | --- | --- | --- |
-| 1 | F1 | Brightness down | Brightness down | F1 |
-| 2 | F2 | Brightness up | Brightness up | F2 |
-| 3 | F3 | Mission Control / show all windows | Mission Control / show all windows | F3 |
-| 4 | F4 | Mac launch | Mac launch | F4 |
-| 5 | F5 | Search | Search | F5 |
-| 6 | F6 | `C_AL_LOCK` | Ctrl+Alt+M | F6 |
-| 7 | F7 | Previous track | Previous track | F7 |
-| 8 | F8 | Play/Pause | Play/Pause | F8 |
-| 9 | F9 | Next track | Next track | F9 |
-| 10 | F10 | Mute | Mute | F10 |
-| 11 | F11 | Volume down | Volume down | F11 |
-| 12 | F12 | Volume up | Volume up | F12 |
+| Position | v0.23 Layer 0 | v0.24 Layer 0                      | v0.23 Layer 1                      | v0.24 Layer 1 |
+| -------- | ------------- | ---------------------------------- | ---------------------------------- | ------------- |
+| 1        | F1            | Brightness down                    | Brightness down                    | F1            |
+| 2        | F2            | Brightness up                      | Brightness up                      | F2            |
+| 3        | F3            | Mission Control / show all windows | Mission Control / show all windows | F3            |
+| 4        | F4            | Mac launch                         | Mac launch                         | F4            |
+| 5        | F5            | Search                             | Search                             | F5            |
+| 6        | F6            | `C_AL_LOCK`                        | Ctrl+Alt+M                         | F6            |
+| 7        | F7            | Previous track                     | Previous track                     | F7            |
+| 8        | F8            | Play/Pause                         | Play/Pause                         | F8            |
+| 9        | F9            | Next track                         | Next track                         | F9            |
+| 10       | F10           | Mute                               | Mute                               | F10           |
+| 11       | F11           | Volume down                        | Volume down                        | F11           |
+| 12       | F12           | Volume up                          | Volume up                          | F12           |
 
 ### Mac shortcut and symbol corrections
 
@@ -194,3 +211,9 @@ Newest versions up top
 - \*Keymap:\*\* `file.keymap`
 - [ **Feature** | **Layer x:** | **Fix** | **Unresolved** ]
 ```
+
+## [v0.25.6] - 2026-10-02
+- **Artifact:** B1PRO/QC-IN_PROGRESS/v0.25.6-candidate.uf2
+- **SHA-256:** 5515c95cd02c71fdf9e87d855957a61c527a5a260dc1dd9b0cea93af2109aaf0
+- **Target Unit:** Keychron B1 Pro
+- **Observed Result:** PENDING QC

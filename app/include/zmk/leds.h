@@ -10,6 +10,7 @@ void led_charge_set_state(uint8_t led_state);
 void led_recover(void);
 void led_bat_display(void);
 void led_bat_display_off(void);
+void led_win_lock_indication(void);
 uint8_t get_charge_led_state(void);
 enum {
 	LED_PEER_STATE_DISCONNECTED,

@@ -3,7 +3,7 @@
     "esbenp.prettier-vscode",
     "ms-python.python",
     "ms-vscode.cpptools",
-    "nordic-semiconductor.nrf-devicetree",
+    // "nordic-semiconductor.nrf-devicetree",
     "twxs.cmake"
   ]
 }

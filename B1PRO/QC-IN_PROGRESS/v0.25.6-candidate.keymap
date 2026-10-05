@@ -1,40 +1,36 @@
 /*
- * Keychron B1 Pro v0.25.8 Candidate (Build 8).
+ * Keychron B1 Pro v0.25.6 Candidate (Build 6).
  * Baseline: v0.25-unified (recalled)
  *
- * 8-Layer Architecture (4 Mac / 4 Win):
- * - Mac: Base (0), Func (1), Symbol (2), Nav (3)
- * - Win: Base (4), Func (5), Symbol (6), Nav (7)
- * - Eliminated UAT and MCRO layers (formerly 4, 5, 10, 11).
- *
- * BASE Layers (0 & 4):
- * - Fn key next to R_CMD / R_ALT: Tap-dance (1-tap/hold TG/MO FUNC, 2-tap TOG SYM1, 3-tap TOG NAV1).
+ * BASE Layers (0 & 6):
+ * - Fn key next to R_CMD / R_ALT: 1-tap TG(FUNC), 2-tap OSL(MCRO), Hold MO(FUNC).
  * - Homerow Mods (lhm/rhm): Retro-tap enabled, row-aligned positional triggers, relaxed timings (+75ms).
  *
- * FUNC Layers (1 & 5):
+ * FUNC Layers (1 & 7):
  * - Numrow 6 = NumLock (&kp KP_NUM, double-flash white indication).
  * - Numrow 7-0 = *, /, +, -, Q-T = &trans, Y = DEL, P = BSPC.
  * - Pos 59 (V on Win Func): GPU driver reset (&uc LG(LC(LS(B))) -> Win + Ctrl + Shift + B).
  * - Pos 60 (B on Mac/Win Func): Battery level indicator (&out OUT_BAT).
- * - Pos 0 (Esc on Func): Tap returns to Base (Mac 0 / Win 4); Hold 3s toggles F-row exchange (&change).
+ * - Pos 0 (Esc on Func): Tap returns to Base; Hold 3s toggles F-row exchange (&change).
  *
- * SYMBOL Layers (2 & 6):
+ * SYMBOL Layers (2 & 8):
  * - Fn row = F1-F12, Num row = F13-F24.
  * - Left-hand ASDF = opening <, [, {, ( with HRM holds.
- * - Right-hand JKLM = closing ), }, ], > (1-tap) and auto-closing macros (_), {_}, [_] (2-tap).
- * - Comma / Period = < (1-tap) / <_> (2-tap) and > (1-tap) / </_> (2-tap).
+ * - Right-hand JKLM = closing ), }, ], > (1-tap) and auto-closing macros (_), {_}, [_], <_> (2-tap).
  *
- * NAVIGATION Layers (3 & 7):
+ * NAVIGATION Layers (3 & 9):
  * - Pos 53 (Space): Set to &trans for seamless transparent fallback and space repetition.
- * - Slash (/): Set to &trans transparent pass-through.
+ *
+ * MACRO Layers (5 & 11):
+ * - Activated via hold Z or hold / on Base layers.
+ * - Pos J, K, L, M emit auto-closing brackets with cursor centering.
  *
  * LED Subsystem (Custom CAF Engine):
- * - Layer Beacon Pulsing: 1.5s ON / 1.5s OFF beacon sequence on binary GPIO indicator:
+ * - Layer Hold Pulsing: ON 500ms -> OFF 250ms -> ON 600ms -> OFF 250ms (active for key hold duration).
  *   - Func: White (#FFFFFF)
  *   - Symbol: Green (#00FF00)
  *   - Navigation: Purple (#B400FF)
  *   - Macro: Orange (#FF6400)
- * - Dynamic Devicetree CAPS node lookup and power-on finish status bugfixes.
  * - Lock / Action Indications:
  *   - NumLock: Double White flash (250ms on / 200ms off / 250ms on).
  *   - Win Lock (OUT_FN_WIN): Double Cyan flash (#00FFFF, 350ms on / 200ms off / 350ms on).
@@ -55,10 +51,14 @@
 #define LYR_M_FUNC        1
 #define LYR_M_SYM1        2
 #define LYR_M_NAV1        3
-#define LYR_W_BASE        4
-#define LYR_W_FUNC        5
-#define LYR_W_SYM1        6
-#define LYR_W_NAV1        7
+#define LYR_M_UAT         4
+#define LYR_M_MCRO        5
+#define LYR_W_BASE        6
+#define LYR_W_FUNC        7
+#define LYR_W_SYM1        8
+#define LYR_W_NAV1        9
+#define LYR_W_UAT         10
+#define LYR_W_MCRO        11
 
 #define MOUSE_UP          0x00CD
 #define MOUSE_DOWN        0x00CE
@@ -102,10 +102,23 @@
     };
 
     /*
+     * Function/Media Row Exchange Hold-Tap (3-second guard):
+     * Invokes &change (&out OUT_FN -> do_f1_f13_fn_exchange()).
+     */
+    long_press_change: long_press_change {
+        compatible = "zmk,behavior-hold-tap";
+        label = "LP_CHANGE";
+        #binding-cells = <2>;
+        flavor = "tap-preferred";
+        tapping-term-ms = <3000>;
+        bindings = <&change>, <&none>;
+    };
+
+    /*
      * Windows Key Lock Hold-Tap (3-second guard):
      * Invokes &fn_win (&out OUT_FN_WIN -> toggles fn_win_lock flag).
      * When active, hid.c filters out LGUI/RGUI modifier signals globally across
-     * all Windows layers (Base 4, Sym 6, Nav 7) to prevent accidental
+     * all Windows layers (Base 6, Sym 8, Nav 9, Macro 11) to prevent accidental
      * Win+L, Win+U, or gaming interruptions.
      */
     long_press_fn_win: long_press_fn_win {
@@ -119,7 +132,7 @@
 
     /*
      * Fn + Esc dual-role bindings for Function layers (pos 0):
-     * - Tap: Instantly exits Function layer back to Base (Layer 0 Mac / Layer 4 Win).
+     * - Tap: Instantly exits Function layer back to Base (Layer 0 Mac / Layer 6 Win).
      * - Hold (3s): Toggles Function/Media row exchange (&change / OUT_FN).
      */
     fn_esc_change_mac: fn_esc_change_mac {
@@ -356,7 +369,7 @@
          * Windows Key Lock (Fn + Win held for 3 seconds):
          * - Toggle trigger scoped to Windows Function layer (<LYR_W_FUNC>) at pos 68.
          * - Once toggled ON, the lock operates globally across all Windows layers
-         *   (Base 4, Sym 6, Nav 7) by having hid.c suppress LGUI/RGUI signals,
+         *   (Base 6, Sym 8, Nav 9, Macro 11) by having hid.c suppress LGUI/RGUI signals,
          *   preventing accidental Win+L (Lock Screen), Win+U (Accessibility), or gaming interruptions.
          * - Visual confirmation: triggers a unique Magenta/Purple double-flash LED indication.
          * - Toggling again turns the lock off.
@@ -411,11 +424,11 @@
     ┣━━━━━━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━━━━━━━━━━━━━━━━━━┫
     ┃              ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃    <    ┃    >    ┃    ?    ┃                          ┃
     ┃   L_SHIFT    ┃    Z    ┃    X    ┃    C    ┃    V    ┃    B    ┃   N     ┃    M    ┃    ,    ┃    .    ┃    /    ┃        R_SHIFT           ┃
-    ┃              ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃                          ┃
+    ┃              ┃HOLD:MCRO┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃HOLD:MCRO┃                          ┃
     ┣━━━━━━━━━━━┳━━┻━━━━━━━┳━┻━━━━━━━━━╋━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╋━━━━━━━━━┻━━━━┳━━━━┻━━━━━┳━┳━┻━━━━━━┳━━━━━━━━━┳━━━━━━━━━┫
-    ┃           ┃          ┃           ┃                                                 ┃              ┃1T/H: FUNC┃ ┃        ┃    ↑    ┃         ┃
-    ┃  L_CTRL   ┃  L_ALT   ┃   L_CMD   ┃             * &lt LYR_M_NAV1 SPACE *            ┃    R_CMD     ┃2T: SYM1  ┃ ┃    ←   ┣━━━━━━━━━┫   →     ┃
-    ┃           ┃          ┃           ┃                                                 ┃              ┃3T: NAV1  ┃ ┃        ┃    ↓    ┃         ┃
+    ┃           ┃          ┃           ┃                                                 ┃              ┃1T: TG(1) ┃ ┃        ┃    ↑    ┃         ┃
+    ┃  L_CTRL   ┃  L_ALT   ┃   L_CMD   ┃             * &lt LYR_M_NAV1 SPACE *            ┃    R_CMD     ┃2T: OSL(5)┃ ┃    ←   ┣━━━━━━━━━┫   →     ┃
+    ┃           ┃          ┃           ┃                                                 ┃              ┃HOLD:MO(1)┃ ┃        ┃    ↓    ┃         ┃
     ┗━━━━━━━━━━━┻━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━┻━━━━━━━━━━┛ ┗━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┛
     */
 
@@ -552,6 +565,91 @@
     >;
     };
 
+    /* LAYER 4: LYR_M_UAT (reserved)
+      * No Layer-0 entry point. Layer-1 selector position 18 may enter this
+      * safe layer; position 0 is the sole exit and positions 1--81 are inert.
+    ┏━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┓
+    ┃           ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃
+    ┃   TO(0)   ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃
+    ┃           ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃
+    ┣━━━━━━━┳━━━┻━━━━━┳━━━┻━━━━━┳━━━┻━━━━━┳━━━┻━━━━━┳━━━┻━━━━━┳━━━┻━━━━━┳━━━┻━━━━━┳━━━┻━━━━━┳━━━┻━━━━━┳━━━┻━━━━━┳━━━┻━━━━━┳━━━┻━━━━━┳━━━┻━━━━━━━━━┫
+    ┃       ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃             ┃
+    ┃       ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃             ┃
+    ┃       ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃             ┃
+    ┣━━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━━━━━┫
+    ┃          ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃          ┃
+    ┃          ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃          ┃
+    ┃          ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃          ┃
+    ┣━━━━━━━━━━┻┳━━━━━━━━┻┳━━━━━━━━┻┳━━━━━━━━┻┳━━━━━━━━┻┳━━━━━━━━┻┳━━━━━━━━┻┳━━━━━━━━┻┳━━━━━━━━┻┳━━━━━━━━┻┳━━━━━━━━┻┳━━━━━━━━┻┳━━━━━━━━┻━━━━━━━━━━┫
+    ┃           ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃                   ┃
+    ┃           ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃                   ┃
+    ┃           ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃                   ┃
+    ┣━━━━━━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━━━━━━━━━━━━━━━━━━┫
+    ┃              ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃                          ┃
+    ┃              ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃                          ┃
+    ┃              ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃                          ┃
+    ┣━━━━━━━━━━━┳━━┻━━━━━━━┳━┻━━━━━━━━━╋━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╋━━━━━━━━━┻━━━━┳━━━━┻━━━━━┳━┳━┻━━━━━━┳━━━━━━━━━┳━━━━━━━━━┫
+    ┃           ┃          ┃           ┃                                                 ┃              ┃          ┃ ┃        ┃         ┃         ┃
+    ┃           ┃          ┃           ┃                                                 ┃              ┃          ┃ ┃        ┣━━━━━━━━━┫         ┃
+    ┃           ┃          ┃           ┃                                                 ┃              ┃          ┃ ┃        ┃         ┃         ┃
+    ┗━━━━━━━━━━━┻━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━┻━━━━━━━━━━┛ ┗━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┛
+      */
+    layer_m_uat {
+      bindings = <
+        //ESC           //f1    //f2    //f3    //f4    //f5    //f6    //f7    //f8    //f9    //f10   //f11   //f12   //DEL
+        &to LYR_M_BASE  &none   &none   &none   &none   &none   &none   &none   &none   &none   &none   &none   &none   &none
+        &none           &none   &none   &none   &none   &none   &none   &none   &none   &none   &none   &none   &none   &none
+        &none           &none   &none   &none   &none   &none   &none   &none   &none   &none   &none   &none   &none   &none
+        &none           &none   &none   &none   &none   &none   &none   &none   &none   &none   &none   &none   &none
+        &none           &none   &none   &none   &none   &none   &none   &none   &none   &none   &none   &none
+        &none           &none   &none   &none   &none   &none   &none   &none   &none   &none
+        &none           &none   &none   &none   &none
+      >;
+    };
+
+    /* LAYER 5: LYR_M_MCRO (developer macro / Fn selector / Hold Z or /)
+      * Fn tap activates one-shot selector; Hold Z or / activates momentary bracket macros.
+      * N1--N4 select Layers 1--4; J, K, L, M emit auto-closing brackets with cursor centering.
+      * Esc exits to Layer 0. All other positions, including 77--81, are inert.
+    ┏━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┓
+    ┃           ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃
+    ┃TO(LYR_M_  ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃
+    ┃   BASE)   ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃
+    ┣━━━━━━━┳━━━┻━━━━━┳━━━┻━━━━━┳━━━┻━━━━━┳━━━┻━━━━━┳━━━┻━━━━━┳━━━┻━━━━━┳━━━┻━━━━━┳━━━┻━━━━━┳━━━┻━━━━━┳━━━┻━━━━━┳━━━┻━━━━━┳━━━┻━━━━━┳━━━┻━━━━━━━━━┫
+    ┃       ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃             ┃
+    ┃       ┃TO(LYR_M_┃TO(LYR_M_┃TO(LYR_M_┃TO(LYR_M_┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃             ┃
+    ┃       ┃   FUNC) ┃   SYM1) ┃   NAV1) ┃   UAT)  ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃             ┃
+    ┣━━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━━━━━┫
+    ┃          ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃          ┃
+    ┃          ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃          ┃
+    ┃          ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃          ┃
+    ┣━━━━━━━━━━┻┳━━━━━━━━┻┳━━━━━━━━┻┳━━━━━━━━┻┳━━━━━━━━┻┳━━━━━━━━┻┳━━━━━━━━┻┳━━━━━━━━┻┳━━━━━━━━┻┳━━━━━━━━┻┳━━━━━━━━┻┳━━━━━━━━┻┳━━━━━━━━┻━━━━━━━━━━┫
+    ┃           ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃                   ┃
+    ┃           ┃         ┃         ┃         ┃         ┃         ┃         ┃  ( )+←  ┃  { }+←  ┃  [ ]+←  ┃         ┃         ┃                   ┃
+    ┃           ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃                   ┃
+    ┣━━━━━━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━━━━━━━━━━━━━━━━━━┫
+    ┃              ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃                          ┃
+    ┃              ┃         ┃         ┃         ┃         ┃         ┃         ┃  < >+←  ┃         ┃         ┃         ┃                          ┃
+    ┃              ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃                          ┃
+    ┣━━━━━━━━━━━┳━━┻━━━━━━━┳━┻━━━━━━━━━╋━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╋━━━━━━━━━┻━━━━┳━━━━┻━━━━━┳━┳━┻━━━━━━┳━━━━━━━━━┳━━━━━━━━━┫
+    ┃           ┃          ┃           ┃                                                 ┃              ┃          ┃ ┃        ┃         ┃         ┃
+    ┃           ┃          ┃           ┃                                                 ┃              ┃          ┃ ┃        ┣━━━━━━━━━┫         ┃
+    ┃           ┃          ┃           ┃                                                 ┃              ┃          ┃ ┃        ┃         ┃         ┃
+    ┗━━━━━━━━━━━┻━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━┻━━━━━━━━━━┛ ┗━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┛
+      */
+    layer_m_mcro {
+      bindings = <
+        // ESC (p0)     // F1--F12 / Del (p1--p13)
+        &to LYR_M_BASE  &none           &none           &none           &none           &none   &none   &none           &none           &none           &none   &none   &none   &none
+        &none           &to LYR_M_FUNC  &to LYR_M_SYM1  &to LYR_M_NAV1  &to LYR_M_UAT   &none   &none   &none           &none           &none           &none   &none   &none   &none
+        &none           &none           &none           &none           &none           &none   &none   &none           &none           &none           &none   &none   &none   &none
+        &none           &none           &none           &none           &none           &none   &none   &mcro_parens    &mcro_braces    &mcro_brackets  &none   &none   &none
+        &none           &none           &none           &none           &none           &none   &none   &mcro_angle_brackets &none      &none           &none   &none
+        &none           &none           &none           &none           &none           &none   &none   &none           &none           &none
+        &none           &none           &none           &none           &none
+      >;
+    };
+
   /*
             ,.=:!!t3Z3z.,
           :tt:::tt333EE3
@@ -571,7 +669,7 @@
                     "VEzjt:;;z>*`
   */
 
-    /* LAYER 4: LYR_W_BASE
+    /* LAYER 6: LYR_W_BASE
       * Activated by the physical Win switch through Layer-0 position 77.
       * The minimum Windows base intentionally mirrors Layer 0's typing and
       * layer-access bindings until a Windows-specific binding map is approved.
@@ -596,9 +694,9 @@
     ┃   L_SHIFT    ┃    Z    ┃    X    ┃    C    ┃    V    ┃    B    ┃   N     ┃    M    ┃    ,    ┃    .    ┃    /    ┃        R_SHIFT           ┃
     ┃              ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃                          ┃
     ┣━━━━━━━━━━━┳━━┻━━━━━━━┳━┻━━━━━━━━━╋━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╋━━━━━━━━━┻━━━━┳━━━━┻━━━━━┳━┳━┻━━━━━━┳━━━━━━━━━┳━━━━━━━━━┫
-    ┃           ┃          ┃           ┃                                                 ┃              ┃1T/H: FUNC┃ ┃        ┃    ↑    ┃         ┃
-    ┃  L_CTRL   ┃  L_GUI   ┃   L_ALT   ┃             * &lt LYR_W_NAV1 SPACE *            ┃    R_ALT     ┃2T: SYM1  ┃ ┃    ←   ┣━━━━━━━━━┫   →     ┃
-    ┃           ┃          ┃           ┃                                                 ┃              ┃3T: NAV1  ┃ ┃        ┃    ↓    ┃         ┃
+    ┃           ┃          ┃           ┃                                                 ┃              ┃TAP: OSL( ┃ ┃        ┃    ↑    ┃         ┃
+    ┃  L_CTRL   ┃  L_GUI   ┃   L_ALT   ┃             * &lt LYR_W_NAV1 SPACE *            ┃    R_ALT     ┃    11)   ┃ ┃    ←   ┣━━━━━━━━━┫   →     ┃
+    ┃           ┃          ┃           ┃                                                 ┃              ┃HOLD:MO(7)┃ ┃        ┃    ↓    ┃         ┃
     ┗━━━━━━━━━━━┻━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━┻━━━━━━━━━━┛ ┗━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┛
       */
     layer_w_base {
@@ -614,7 +712,7 @@
       >;
     };
 
-    /* LAYER 5: LYR_W_FUNC
+    /* WINDOWS LAYER 5: LYR_W_FUNC
     ┏━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┓
     ┃           ┃         ┃         ┃         ┃         ┃VOQUILL  ┃MIC-MUTE:┃ PREVIOUS┃ PLAY/   ┃   NEXT  ┃         ┃         ┃         ┃         ┃
     ┃TO(LYR_W_  ┃ Bright- ┃ Bright+ ┃ WIN+TAB ┃ALT+SPACE┃   V+N   ┃CTRL+ALT+┃  TRACK  ┃  PAUSE  ┃  TRACK  ┃   MUTE  ┃   Vol-  ┃  Vol+   ┃   DEL   ┃
@@ -654,7 +752,7 @@
       >;
     };
 
-    /* LAYER 6: LYR_W_SYM1 — physical binding illustration
+    /* WINDOWS LAYER 6: LYR_W_SYM1 — physical binding illustration
     ┏━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┓
     ┃           ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃
     ┃TO(LYR_W_  ┃   F1    ┃   F2    ┃   F3    ┃   F4    ┃   F5    ┃   F6    ┃    F7   ┃    F8   ┃    F9   ┃   F10   ┃   F11   ┃   F12   ┃   ▼     ┃
@@ -694,7 +792,7 @@
       >;
     };
 
-    /* LAYER 7: LYR_W_NAV1 — physical binding illustration
+    /* WINDOWS LAYER 7: LYR_W_NAV1 — physical binding illustration
      * [Esc F1..F12 Del] => W base, F13..F24, transparent Del.
      * [Tab Q..P [ ] \\] => Alt+F4, Ctrl+W, mouse wheel, Delete/Up/Backspace, mouse directions.
      * [Caps A..; Enter] => inert Caps, modifiers, Home/Left/Down/Right/End.
@@ -739,5 +837,89 @@
       >;
     };
 
+    /* WINDOWS LAYER 10: LYR_W_UAT — illustration: [Esc] TO(W base); every other physical position is inert.
+    **Description:** Reserved UAT layer. Escape returns to Layer 0; every other position is inert.
+    ┏━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┓
+    ┃           ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃
+    ┃TO(LYR_W_  ┃    ▼    ┃    ▼    ┃    ▼    ┃    ▼    ┃    ▼    ┃    ▼    ┃    ▼    ┃    ▼    ┃    ▼    ┃    ▼    ┃    ▼    ┃    ▼    ┃         ┃
+    ┃   BASE)   ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃
+    ┣━━━━━━━┳━━━┻━━━━━┳━━━┻━━━━━┳━━━┻━━━━━┳━━━┻━━━━━┳━━━┻━━━━━┳━━━┻━━━━━┳━━━┻━━━━━┳━━━┻━━━━━┳━━━┻━━━━━┳━━━┻━━━━━┳━━━┻━━━━━┳━━━┻━━━━━┳━━━┻━━━━━━━━━┫
+    ┃       ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃             ┃
+    ┃       ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃             ┃
+    ┃       ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃             ┃
+    ┣━━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━━━━━┫
+    ┃          ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃          ┃
+    ┃          ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃          ┃
+    ┃          ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃          ┃
+    ┣━━━━━━━━━━┻┳━━━━━━━━┻┳━━━━━━━━┻┳━━━━━━━━┻┳━━━━━━━━┻┳━━━━━━━━┻┳━━━━━━━━┻┳━━━━━━━━┻┳━━━━━━━━┻┳━━━━━━━━┻┳━━━━━━━━┻┳━━━━━━━━┻┳━━━━━━━━┻━━━━━━━━━━┫
+    ┃           ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃                   ┃
+    ┃           ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃                   ┃
+    ┃           ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃                   ┃
+    ┣━━━━━━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━━━━━━━━━━━━━━━━━━┫
+    ┃              ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃                          ┃
+    ┃              ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃                          ┃
+    ┃              ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃                          ┃
+    ┣━━━━━━━━━━━┳━━┻━━━━━━━┳━┻━━━━━━━━━╋━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╋━━━━━━━━━┻━━━━┳━━━━┻━━━━━┳━┳━┻━━━━━━┳━━━━━━━━━┳━━━━━━━━━┫
+    ┃           ┃          ┃           ┃                                                 ┃              ┃          ┃ ┃        ┃         ┃         ┃
+    ┃           ┃          ┃           ┃                                                 ┃              ┃          ┃ ┃        ┣━━━━━━━━━┫         ┃
+    ┃           ┃          ┃           ┃                                                 ┃              ┃          ┃ ┃        ┃         ┃         ┃
+    ┗━━━━━━━━━━━┻━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━┻━━━━━━━━━━┛ ┗━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┛
+    */
+
+    layer_w_uat {
+      bindings = <
+        //ESC           //f1    //f2    //f3    //f4    //f5    //f6    //f7    //f8    //f9    //f10   //f11   //f12   //DEL
+        &to LYR_W_BASE  &none   &none   &none   &none   &none   &none   &none   &none   &none   &none   &none   &none   &none
+        &none           &none   &none   &none   &none   &none   &none   &none   &none   &none   &none   &none   &none   &none
+        &none           &none   &none   &none   &none   &none   &none   &none   &none   &none   &none   &none   &none   &none
+        &none           &none   &none   &none   &none   &none   &none   &none   &none   &none   &none   &none   &none
+        &none           &none   &none   &none   &none   &none   &none   &none   &none   &none   &none   &none
+        &none           &none   &none   &none   &none   &none   &none   &none   &none   &none
+        &none           &none   &none   &none   &none
+      >;
+    };
+
+    /* WINDOWS LAYER 11: LYR_W_MCRO (developer macro / Fn selector / Hold Z or /)
+     * [Esc] returns to W base. [1 2 3 4] persistently select W Func/Sym/Nav/UAT.
+     * J, K, L, M emit auto-closing brackets with cursor centering.
+     * Every remaining physical key, including all five direct controls, is inert.
+    ┏━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┓
+    ┃           ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃
+    ┃TO(LYR_W_  ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃
+    ┃   BASE)   ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃
+    ┣━━━━━━━┳━━━┻━━━━━┳━━━┻━━━━━┳━━━┻━━━━━┳━━━┻━━━━━┳━━━┻━━━━━┳━━━┻━━━━━┳━━━┻━━━━━┳━━━┻━━━━━┳━━━┻━━━━━┳━━━┻━━━━━┳━━━┻━━━━━┳━━━┻━━━━━┳━━━┻━━━━━━━━━┫
+    ┃       ┃TO(LAYER_┃TO(LAYER_┃TO(LAYER_┃TO(LAYER_┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃             ┃
+    ┃       ┃ W_FUNC) ┃ W_SYM1) ┃ W_NAV1) ┃ W_UAT)  ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃             ┃
+    ┃       ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃             ┃
+    ┣━━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━━━━━┫
+    ┃          ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃          ┃
+    ┃          ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃          ┃
+    ┃          ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃          ┃
+    ┣━━━━━━━━━━┻┳━━━━━━━━┻┳━━━━━━━━┻┳━━━━━━━━┻┳━━━━━━━━┻┳━━━━━━━━┻┳━━━━━━━━┻┳━━━━━━━━┻┳━━━━━━━━┻┳━━━━━━━━┻┳━━━━━━━━┻┳━━━━━━━━┻┳━━━━━━━━┻━━━━━━━━━━┫
+    ┃           ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃                   ┃
+    ┃           ┃         ┃         ┃         ┃         ┃         ┃         ┃  ( )+←  ┃  { }+←  ┃  [ ]+←  ┃         ┃         ┃                   ┃
+    ┃           ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃                   ┃
+    ┣━━━━━━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━┳━━━━━━┻━━━━━━━━━━━━━━━━━━━┫
+    ┃              ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃                          ┃
+    ┃              ┃         ┃         ┃         ┃         ┃         ┃         ┃  < >+←  ┃         ┃         ┃         ┃                          ┃
+    ┃              ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃         ┃                          ┃
+    ┣━━━━━━━━━━━┳━━┻━━━━━━━┳━┻━━━━━━━━━╋━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╋━━━━━━━━━┻━━━━┳━━━━┻━━━━━┳━┳━┻━━━━━━┳━━━━━━━━━┳━━━━━━━━━┫
+    ┃           ┃          ┃           ┃                                                 ┃              ┃          ┃ ┃        ┃         ┃         ┃
+    ┃           ┃          ┃           ┃                                                 ┃              ┃          ┃ ┃        ┣━━━━━━━━━┫         ┃
+    ┃           ┃          ┃           ┃                                                 ┃              ┃          ┃ ┃        ┃         ┃         ┃
+    ┗━━━━━━━━━━━┻━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━┻━━━━━━━━━━┛ ┗━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┛
+    */
+    layer_w_mcro {
+      bindings = <
+        //ESC           //f1            //f2            //f3            //f4           //f5   //f6   //f7           //f8          //f9            //f10  //f11  //f12  //DEL
+        &to LYR_W_BASE  &none           &none           &none           &none          &none  &none  &none          &none         &none           &none  &none  &none  &none
+        &none           &to LYR_W_FUNC  &to LYR_W_SYM1  &to LYR_W_NAV1  &to LYR_W_UAT  &none  &none  &none          &none         &none           &none  &none  &none  &none
+        &none           &none           &none           &none           &none          &none  &none  &none          &none         &none           &none  &none  &none  &none
+        &none           &none           &none           &none           &none          &none  &none  &mcro_parens   &mcro_braces  &mcro_brackets  &none  &none  &none
+        &none           &none           &none           &none           &none          &none  &none  &mcro_angle_brackets &none    &none           &none  &none
+        &none           &none           &none           &none           &none          &none  &none  &none          &none         &none
+        &none           &none           &none           &none           &none
+      >;
+    };
   };
 };

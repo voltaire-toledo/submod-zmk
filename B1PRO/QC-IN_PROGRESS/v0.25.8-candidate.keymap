@@ -1,49 +1,48 @@
-/*
- * Keychron B1 Pro v0.25.8 Candidate (Build 8).
- * Baseline: v0.25-unified (recalled)
- *
- * 8-Layer Architecture (4 Mac / 4 Win):
- * - Mac: Base (0), Func (1), Symbol (2), Nav (3)
- * - Win: Base (4), Func (5), Symbol (6), Nav (7)
- * - Eliminated UAT and MCRO layers (formerly 4, 5, 10, 11).
- *
- * BASE Layers (0 & 4):
- * - Fn key next to R_CMD / R_ALT: Tap-dance (1-tap/hold TG/MO FUNC, 2-tap TOG SYM1, 3-tap TOG NAV1).
- * - Homerow Mods (lhm/rhm): Retro-tap enabled, row-aligned positional triggers, relaxed timings (+75ms).
- *
- * FUNC Layers (1 & 5):
- * - Numrow 6 = NumLock (&kp KP_NUM, double-flash white indication).
- * - Numrow 7-0 = *, /, +, -, Q-T = &trans, Y = DEL, P = BSPC.
- * - Pos 59 (V on Win Func): GPU driver reset (&uc LG(LC(LS(B))) -> Win + Ctrl + Shift + B).
- * - Pos 60 (B on Mac/Win Func): Battery level indicator (&out OUT_BAT).
- * - Pos 0 (Esc on Func): Tap returns to Base (Mac 0 / Win 4); Hold 3s toggles F-row exchange (&change).
- *
- * SYMBOL Layers (2 & 6):
- * - Fn row = F1-F12, Num row = F13-F24.
- * - Left-hand ASDF = opening <, [, {, ( with HRM holds.
- * - Right-hand JKLM = closing ), }, ], > (1-tap) and auto-closing macros (_), {_}, [_] (2-tap).
- * - Comma / Period = < (1-tap) / <_> (2-tap) and > (1-tap) / </_> (2-tap).
- *
- * NAVIGATION Layers (3 & 7):
- * - Pos 53 (Space): Set to &trans for seamless transparent fallback and space repetition.
- * - Slash (/): Set to &trans transparent pass-through.
- *
- * LED Subsystem (Custom CAF Engine):
- * - Layer Beacon Pulsing: 1.5s ON / 1.5s OFF beacon sequence on binary GPIO indicator:
- *   - Func: White (#FFFFFF)
- *   - Symbol: Green (#00FF00)
- *   - Navigation: Purple (#B400FF)
- *   - Macro: Orange (#FF6400)
- * - Dynamic Devicetree CAPS node lookup and power-on finish status bugfixes.
- * - Lock / Action Indications:
- *   - NumLock: Double White flash (250ms on / 200ms off / 250ms on).
- *   - Win Lock (OUT_FN_WIN): Double Cyan flash (#00FFFF, 350ms on / 200ms off / 350ms on).
- *   - Battery Check (OUT_BAT): Solid Green (>=70%), Blue (30-69%), Red (<30%).
- *
- * Hardware Recovery & Direct Controls (Positions 77-81):
- * - Fn + - (hold 3s): Enter NRF52 bootloader (&en_bootloader).
- * - Fn + J + Z (hold 3s): Factory reset (&recover).
- * - Direct Controls (77-81) preserved intact across all layers: BT_SEL 0..2, OUT_BLE, OUT_USB.
+/*  Keychron B1 Pro v0.25.8 Candidate (Build 8).
+    Baseline: v0.25-unified (recalled)
+   
+    8-Layer Architecture (4 Mac / 4 Win):
+    - Mac: Base (0), Func (1), Symbol (2), Nav (3)
+    - Win: Base (4), Func (5), Symbol (6), Nav (7)
+    - Eliminated UAT and MCRO layers (formerly 4, 5, 10, 11).
+   
+    BASE Layers (0 & 4):
+    - Fn key next to R_CMD / R_ALT: Tap-dance (1-tap/hold TG/MO FUNC, 2-tap TOG SYM1, 3-tap TOG NAV1).
+    - Homerow Mods (lhm/rhm): Retro-tap enabled, row-aligned positional triggers, relaxed timings (+75ms).
+   
+    FUNC Layers (1 & 5):
+    - Numrow 6 = NumLock (&kp KP_NUM, double-flash white indication).
+    - Numrow 7-0 = *, /, +, -, Q-T = &trans, Y = DEL, P = BSPC.
+    - Pos 59 (V on Win Func): GPU driver reset (&uc LG(LC(LS(B))) -> Win + Ctrl + Shift + B).
+    - Pos 60 (B on Mac/Win Func): Battery level indicator (&out OUT_BAT).
+    - Pos 0 (Esc on Func): Tap returns to Base (Mac 0 / Win 4); Hold 3s toggles F-row exchange (&change).
+   
+    SYMBOL Layers (2 & 6):
+    - Fn row = F1-F12, Num row = F13-F24.
+    - Left-hand ASDF = opening <, [, {, ( with HRM holds.
+    - Right-hand JKLM = closing ), }, ], > (1-tap) and auto-closing macros (_), {_}, [_] (2-tap).
+    - Comma / Period = < (1-tap) / <_> (2-tap) and > (1-tap) / </_> (2-tap).
+   
+    NAVIGATION Layers (3 & 7):
+    - Pos 53 (Space): Set to &trans for seamless transparent fallback and space repetition.
+    - Slash (/): Set to &trans transparent pass-through.
+   
+    LED Subsystem (Custom CAF Engine):
+    - Layer Beacon Pulsing: 1.5s ON / 1.5s OFF beacon sequence on binary GPIO indicator:
+      - Func: White (#FFFFFF)
+      - Symbol: Green (#00FF00)
+      - Navigation: Purple (#B400FF)
+      - Macro: Orange (#FF6400)
+    - Dynamic Devicetree CAPS node lookup and power-on finish status bugfixes.
+    - Lock / Action Indications:
+      - NumLock: Double White flash (250ms on / 200ms off / 250ms on).
+      - Win Lock (OUT_FN_WIN): Double Cyan flash (#00FFFF, 350ms on / 200ms off / 350ms on).
+      - Battery Check (OUT_BAT): Solid Green (>=70%), Blue (30-69%), Red (<30%).
+   
+    Hardware Recovery & Direct Controls (Positions 77-81):
+    - Fn + - (hold 3s): Enter NRF52 bootloader (&en_bootloader).
+    - Fn + J + Z (hold 3s): Factory reset (&recover).
+    - Direct Controls (77-81) preserved intact across all layers: BT_SEL 0..2, OUT_BLE, OUT_USB.
  */
 
 #include <behaviors.dtsi>
@@ -352,6 +351,7 @@
             bindings = <&long_press_recover 0 0>;
         };
 
+        combo_win_lock {
         /*
          * Windows Key Lock (Fn + Win held for 3 seconds):
          * - Toggle trigger scoped to Windows Function layer (<LYR_W_FUNC>) at pos 68.
@@ -361,7 +361,6 @@
          * - Visual confirmation: triggers a unique Magenta/Purple double-flash LED indication.
          * - Toggling again turns the lock off.
          */
-        combo_win_lock {
             timeout-ms = <1000>;
             layers = <LYR_W_FUNC>;
             key-positions = <68>;    /* Win/Alt (68) */
