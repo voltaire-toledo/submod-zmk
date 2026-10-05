@@ -5,6 +5,7 @@
  */
 
 #include <zephyr/kernel.h>
+#include <string.h>
 #include <zephyr/drivers/led.h>
 #include <zephyr/pm/device.h>
 #include "led_effect.h"
@@ -379,17 +380,28 @@ void keyboad_led_set_onoff(uint8_t led_state)
 		keyboard_led_state =led_state;
 		return;
 	}
-	uint8_t num =led_state &0x01;
-	uint8_t caps= (led_state &0x02);
+	uint8_t num = led_state & 0x01;
+	uint8_t caps = led_state & 0x02;
 	struct led_color color=LED_COLOR(0xff,0xff,0xff);
-	LOG_DBG("led state:%d,num:%d,caps:%d",led_state,num,caps);
-#if !(CONFIG_SHIELD_KEYCHRON_B1)
-	num ? set_color(&leds[LED_NUMLOCK],&color):set_off(&leds[LED_NUMLOCK]);
-#endif 
-	caps ? set_color(&leds[LED_CAPSLOCK],&color):set_off(&leds[LED_CAPSLOCK]);
-	keyboard_led_state =led_state;
+	
+	// Dynamic lookup to bypass fragile DT_INST indices
+	struct led *caps_led_ptr = NULL;
+	for (int i = 0; i < ARRAY_SIZE(leds); i++) {
+		if (leds[i].dev && leds[i].dev->name && strstr(leds[i].dev->name, "CAPS")) {
+			caps_led_ptr = &leds[i];
+			break;
+		}
+	}
+	
+	if (caps_led_ptr) {
+		caps ? set_color(caps_led_ptr, &color) : set_off(caps_led_ptr);
+	} else {
+		caps ? set_color(&leds[LED_CAPSLOCK],&color):set_off(&leds[LED_CAPSLOCK]);
+	}
 
+	keyboard_led_state =led_state;
 }
+
 uint8_t keyboard_get_led_state(void)
 {
 	return keyboard_led_state;
@@ -462,6 +474,7 @@ void led_recover(void)
 }
 void power_on_finish_cb(struct k_work * work)
 {
+	led_power_on_status = 0; /* BUGFIX: Must clear this flag or LEDs never update */
 	keyboad_led_set_onoff(keyboard_led_state);
 	led_charge_set_state(charge_led_state);
 }
@@ -570,13 +583,10 @@ void leds_turnoff(void)
 #define LED_EFFECT_LAYER_PULSE(_color) \
 	{ \
 		.steps = ((const struct led_effect_step[]) { \
-			{ .color = _color,        .substep_count = 1, .substep_time = 0 },   /* Turn ON instantly */ \
-			{ .color = LED_NOCOLOR(), .substep_count = 1, .substep_time = 500 }, /* Stay ON for 500ms, then turn OFF */ \
-			{ .color = _color,        .substep_count = 1, .substep_time = 250 }, /* Stay OFF for 250ms, then turn ON */ \
-			{ .color = LED_NOCOLOR(), .substep_count = 1, .substep_time = 600 }, /* Stay ON for 600ms, then turn OFF */ \
-			{ .color = LED_NOCOLOR(), .substep_count = 1, .substep_time = 250 }, /* Stay OFF for 250ms, then loop */ \
+			{ .color = _color,        .substep_count = 1, .substep_time = 1500 }, /* ON for 1.5s */ \
+			{ .color = LED_NOCOLOR(), .substep_count = 1, .substep_time = 1500 }, /* OFF for 1.5s */ \
 		}), \
-		.step_count = 5, \
+		.step_count = 2, \
 		.loop_forever = true, \
 	}
 
@@ -617,24 +627,20 @@ void led_win_lock_indication(void) {
 static int custom_layer_led_listener(const zmk_event_t *ev) {
     const struct zmk_layer_state_changed *layer_ev = as_zmk_layer_state_changed(ev);
     if (layer_ev) {
-        if (zmk_keymap_layer_active(5) || zmk_keymap_layer_active(11)) {
-            // MCRO layers (5 Mac / 11 Win): Pulsing Orange
-            leds[LED_BAT].effect = &led_effect_layer_mcro;
-            led_update(&leds[LED_BAT]);
-        } else if (zmk_keymap_layer_active(3) || zmk_keymap_layer_active(9)) {
-            // NAV layers (3 Mac / 9 Win): Pulsing Purple
+        if (zmk_keymap_layer_active(3) || zmk_keymap_layer_active(7)) {
+            // NAV layers (3 Mac / 7 Win): Pulsing Purple
             leds[LED_BAT].effect = &led_effect_layer_nav;
             led_update(&leds[LED_BAT]);
-        } else if (zmk_keymap_layer_active(2) || zmk_keymap_layer_active(8)) {
-            // SYM layers (2 Mac / 8 Win): Pulsing Green
+        } else if (zmk_keymap_layer_active(2) || zmk_keymap_layer_active(6)) {
+            // SYM layers (2 Mac / 6 Win): Pulsing Green
             leds[LED_BAT].effect = &led_effect_layer_sym;
             led_update(&leds[LED_BAT]);
-        } else if (zmk_keymap_layer_active(1) || zmk_keymap_layer_active(7)) {
-            // FUNC layers (1 Mac / 7 Win): Pulsing White
+        } else if (zmk_keymap_layer_active(1) || zmk_keymap_layer_active(5)) {
+            // FUNC layers (1 Mac / 5 Win): Pulsing White
             leds[LED_BAT].effect = &led_effect_layer_func;
             led_update(&leds[LED_BAT]);
         } else {
-            // Base layers (0 Mac / 6 Win) and UAT (4 / 10): Turn off RGB LED and stop any active effects
+            // Base layers (0 Mac / 4 Win): Turn off RGB LED and stop any active effects
             k_timer_stop(&leds[LED_BAT].timer);
             leds[LED_BAT].effect = NULL;
             leds[LED_BAT].effect_step = 0;
@@ -651,7 +657,7 @@ static int custom_layer_led_listener(const zmk_event_t *ev) {
     const struct zmk_position_state_changed *pos_ev = as_zmk_position_state_changed(ev);
     if (pos_ev && pos_ev->state) {
         // Numrow-6 (pos 20 / KP_NUM) pressed while on Func/Num layers (1 or 7): Quick double flash (white), then off
-        if (pos_ev->position == 20 && (zmk_keymap_layer_active(1) || zmk_keymap_layer_active(7))) {
+        if (pos_ev->position == 20 && (zmk_keymap_layer_active(1) || zmk_keymap_layer_active(5))) {
             leds[LED_BAT].effect = &led_effect_double_blink_once;
             led_update(&leds[LED_BAT]);
         }

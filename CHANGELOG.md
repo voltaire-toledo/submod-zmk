@@ -211,3 +211,9 @@ Newest versions up top
 - \*Keymap:\*\* `file.keymap`
 - [ **Feature** | **Layer x:** | **Fix** | **Unresolved** ]
 ```
+
+## [v0.25.6] - 2026-10-02
+- **Artifact:** B1PRO/QC-IN_PROGRESS/v0.25.6-candidate.uf2
+- **SHA-256:** 5515c95cd02c71fdf9e87d855957a61c527a5a260dc1dd9b0cea93af2109aaf0
+- **Target Unit:** Keychron B1 Pro
+- **Observed Result:** PENDING QC
