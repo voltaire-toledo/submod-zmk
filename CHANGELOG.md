@@ -1,6 +1,6 @@
 # Firmware Build Changelog
 
-## v0.25.1-candidate (candidate — built / unapproved) - 2026-09-17
+## v0.25.8-candidate (IN QC) - 2026-10-05
 
 **Baseline:** `v0.25-unified` (recalled)  
 **Baseline keymap:** `B1PRO/releases/v0.25/v0.25-unified.keymap`  
@@ -68,20 +68,20 @@
 Mac-labelled functions move from `LYR_M_FUNC` (Layer 1) to `LYR_M_BASE`
 (Layer 0); F1–F12 move to the Fn layer.
 
-| Position | v0.23 Layer 0 | v0.24 Layer 0 | v0.23 Layer 1 | v0.24 Layer 1 |
-| --- | --- | --- | --- | --- |
-| 1 | F1 | Brightness down | Brightness down | F1 |
-| 2 | F2 | Brightness up | Brightness up | F2 |
-| 3 | F3 | Mission Control / show all windows | Mission Control / show all windows | F3 |
-| 4 | F4 | Mac launch | Mac launch | F4 |
-| 5 | F5 | Search | Search | F5 |
-| 6 | F6 | `C_AL_LOCK` | Ctrl+Alt+M | F6 |
-| 7 | F7 | Previous track | Previous track | F7 |
-| 8 | F8 | Play/Pause | Play/Pause | F8 |
-| 9 | F9 | Next track | Next track | F9 |
-| 10 | F10 | Mute | Mute | F10 |
-| 11 | F11 | Volume down | Volume down | F11 |
-| 12 | F12 | Volume up | Volume up | F12 |
+| Position | v0.23 Layer 0 | v0.24 Layer 0                      | v0.23 Layer 1                      | v0.24 Layer 1 |
+| -------- | ------------- | ---------------------------------- | ---------------------------------- | ------------- |
+| 1        | F1            | Brightness down                    | Brightness down                    | F1            |
+| 2        | F2            | Brightness up                      | Brightness up                      | F2            |
+| 3        | F3            | Mission Control / show all windows | Mission Control / show all windows | F3            |
+| 4        | F4            | Mac launch                         | Mac launch                         | F4            |
+| 5        | F5            | Search                             | Search                             | F5            |
+| 6        | F6            | `C_AL_LOCK`                        | Ctrl+Alt+M                         | F6            |
+| 7        | F7            | Previous track                     | Previous track                     | F7            |
+| 8        | F8            | Play/Pause                         | Play/Pause                         | F8            |
+| 9        | F9            | Next track                         | Next track                         | F9            |
+| 10       | F10           | Mute                               | Mute                               | F10           |
+| 11       | F11           | Volume down                        | Volume down                        | F11           |
+| 12       | F12           | Volume up                          | Volume up                          | F12           |
 
 ### Mac shortcut and symbol corrections
 
