@@ -199,8 +199,8 @@ Prefer a deliberate cherry-pick or a separately reviewed port from `zmk`. Keychr
 After a QC-passed release has one exact source commit and its archived hashes are verified, create an annotated, product-namespaced tag:
 
 ```powershell
-git tag -a mello-b1pro-v0.23 -m "B1 Pro v0.23 QC-passed release"
-git push origin mello-b1pro-v0.23
+git tag -a b1pro-v0.23 -m "B1 Pro v0.23 QC-passed release"
+git push origin b1pro-v0.23
 ```
 
 Release keymaps and UF2 files are kept under [`B1PRO/releases/`](./B1PRO/releases/). Design material, images, and the native Windows developer lab are also kept under [`B1PRO/`](./B1PRO/).

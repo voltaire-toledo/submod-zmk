@@ -1,4 +1,4 @@
-From: Mello ZMK workspace
+From: ZMK workspace
 Subject: [PATCH] scripts: fix malformed clang-format requirement
 
 The original requirement contains an invalid trailing "x", which prevents
